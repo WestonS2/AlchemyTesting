@@ -5,8 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
-  - Equipment
   - Item
+  - Cauldron
   layers:
   - Default
   - TransparentFX

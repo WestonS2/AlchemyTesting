@@ -9,14 +9,18 @@ public class GameManager : MonoBehaviour
 	public enum PlayerState {FreeRoam, WorkMode}
 	public PlayerState playerState;
 	
+	public IDictionary<ItemData.ITEM, GameObject> itemPrefabs = new Dictionary<ItemData.ITEM, GameObject>();
+	
 	[Header("General Game Variables")]
 	[SerializeField] float interactionDistance;
 	[SerializeField] float itemCursorFollowSpeed;
 	[Header("Key Game Objects")]
 	public GameObject GUI;
+	[Header("Item Prefabs")]
+	[SerializeField] List<GameObject> itemObjects = new List<GameObject>();
 	
 	GameObject playerObject;
-	GameObject workingEquipment;
+	GameObject cauldron;
 	GameObject selectedItem;
 
 	void Awake()
@@ -28,6 +32,12 @@ public class GameManager : MonoBehaviour
 		else Destroy(this.gameObject);
 		
 		DontDestroyOnLoad(this);
+		
+		//Assigning prefabs to item type
+		foreach(GameObject itemObj in itemObjects)
+		{
+			itemPrefabs.Add(itemObj.GetComponent<ItemData>().Item, itemObj);
+		}
 	}
 	
 	void Update()
@@ -56,10 +66,10 @@ public class GameManager : MonoBehaviour
 		{
 			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hit, interactionDistance))
 			{
-				if(hit.collider.gameObject.tag == "Equipment")
+				if(hit.collider.gameObject.tag == "Cauldron")
 				{
-					workingEquipment = hit.collider.gameObject;
-					hit.collider.gameObject.GetComponent<Equipment>().ToggleInteraction();
+					cauldron = hit.collider.gameObject;
+					hit.collider.gameObject.GetComponent<Cauldron>().ToggleInteraction();
 					playerState = PlayerState.WorkMode;
 				}
 			}
