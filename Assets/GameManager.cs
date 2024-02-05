@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class GameManager : MonoBehaviour
 	public enum PlayerState {FreeRoam, WorkMode}
 	public PlayerState playerState;
 	
+	public int playerCoins;
+	
 	public IDictionary<ItemData.ITEM, GameObject> itemPrefabs = new Dictionary<ItemData.ITEM, GameObject>();
 	
 	[Header("General Game Variables")]
@@ -16,12 +19,14 @@ public class GameManager : MonoBehaviour
 	[SerializeField] float itemCursorFollowSpeed;
 	[Header("Key Game Objects")]
 	public GameObject GUI;
+	[SerializeField] TextMeshProUGUI coinCounter;
 	[Header("Item Prefabs")]
 	[SerializeField] List<GameObject> itemObjects = new List<GameObject>();
 	
 	GameObject playerObject;
 	GameObject cauldron;
 	GameObject selectedItem;
+	GameObject workCamera;
 
 	void Awake()
 	{
@@ -42,6 +47,8 @@ public class GameManager : MonoBehaviour
 	
 	void Update()
 	{
+		UpdateGUI();
+		
 		//Find Player Object
 		if(playerObject == null) playerObject = GameObject.FindWithTag("Player");
 		
@@ -52,6 +59,28 @@ public class GameManager : MonoBehaviour
 			if(!GUI.activeSelf) GUI.SetActive(true);
 			if(Cursor.lockState != CursorLockMode.Locked) Cursor.lockState = CursorLockMode.Locked;
 			if(Cursor.visible) Cursor.visible = false;
+			if(workCamera != null && workCamera.activeSelf) workCamera.SetActive(false);
+			
+			//General Interaction
+			if(Controls.isInteracting)
+			{
+				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hit, interactionDistance))
+				{
+					if(hit.collider.gameObject.tag == "Cauldron")
+					{
+						cauldron = hit.collider.gameObject;
+						hit.collider.gameObject.GetComponent<Cauldron>().ToggleInteraction();
+						workCamera = hit.collider.gameObject.GetComponent<Cauldron>().workCamera;
+						playerState = PlayerState.WorkMode;
+					}
+					
+					if(hit.collider.gameObject.tag == "Item" && hit.collider.gameObject.GetComponent<ItemData>().Item == ItemData.ITEM.Coin)
+					{
+						playerCoins++;
+						Destroy(hit.collider.gameObject);
+					}
+				}
+			}
 		}
 		else if(playerState == PlayerState.WorkMode)
 		{
@@ -59,56 +88,51 @@ public class GameManager : MonoBehaviour
 			if(GUI.activeSelf) GUI.SetActive(false);
 			if(Cursor.lockState == CursorLockMode.Locked) Cursor.lockState = CursorLockMode.None;
 			if(!Cursor.visible) Cursor.visible = true;
-		}
-		
-		//Equimpent Interaction
-		if(Input.GetKeyDown(KeyCode.E) && playerState == PlayerState.FreeRoam)
-		{
-			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hit, interactionDistance))
+			
+			//Exit Work Mode
+			if(Input.GetKeyDown(KeyCode.Escape)) playerState = PlayerState.FreeRoam;
+			
+			//Work Space Interaction
+			if(Input.GetMouseButtonDown(0))
 			{
-				if(hit.collider.gameObject.tag == "Cauldron")
+				selectedItem = null;
+				Ray mousePosition = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if(Physics.Raycast(mousePosition.origin, mousePosition.direction, out RaycastHit hit, 10, LayerMask.GetMask("Interactables")))
 				{
-					cauldron = hit.collider.gameObject;
-					hit.collider.gameObject.GetComponent<Cauldron>().ToggleInteraction();
-					playerState = PlayerState.WorkMode;
+					if(hit.collider.gameObject.tag == "Item")
+					{
+						selectedItem = hit.collider.gameObject;
+					}
 				}
 			}
-		}
-		
-		//Item Interaction
-		if(Input.GetMouseButtonDown(0) && playerState == PlayerState.WorkMode)
-		{
-			selectedItem = null;
-			Ray mousePosition = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if(Physics.Raycast(mousePosition.origin, mousePosition.direction, out RaycastHit hit, 10, LayerMask.GetMask("Interactables")))
+			else if(Input.GetMouseButtonUp(0) && selectedItem != null)
 			{
-				if(hit.collider.gameObject.tag == "Item")
-				{
-					selectedItem = hit.collider.gameObject;
-				}
-			}
-		}
-		else if(Input.GetMouseButtonUp(0) && playerState == PlayerState.WorkMode && selectedItem != null)
-		{
-			selectedItem = null;
-		}
-		
-		if(selectedItem != null && playerState == PlayerState.WorkMode)
-		{
-			Ray mousePosition = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if(Physics.Raycast(mousePosition.origin, mousePosition.direction, out RaycastHit hit, 10, LayerMask.GetMask("WorkStation")))
-			{
-				selectedItem.GetComponent<Rigidbody>().AddForce((hit.point - selectedItem.transform.position) * itemCursorFollowSpeed);
+				selectedItem = null;
 			}
 			
-			if(Vector3.Distance(hit.point, selectedItem.transform.position) < 0.3f)
+			if(selectedItem != null)
 			{
-				Vector3 clampedSpeed = new Vector3(0, 0, 0);
-				clampedSpeed.x = Mathf.Clamp(selectedItem.GetComponent<Rigidbody>().velocity.x, 0, 2);
-				clampedSpeed.y = Mathf.Clamp(selectedItem.GetComponent<Rigidbody>().velocity.y, 0, 2);
-				clampedSpeed.z = Mathf.Clamp(selectedItem.GetComponent<Rigidbody>().velocity.z, 0, 2);
-				selectedItem.GetComponent<Rigidbody>().velocity = clampedSpeed;
+				Ray mousePosition = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if(Physics.Raycast(mousePosition.origin, mousePosition.direction, out RaycastHit hit, 10, LayerMask.GetMask("WorkStation")))
+				{
+					selectedItem.GetComponent<Rigidbody>().AddForce((hit.point - selectedItem.transform.position) * itemCursorFollowSpeed);
+				}
+				
+				if(Vector3.Distance(hit.point, selectedItem.transform.position) < 0.2f)
+				{
+					Vector3 clampedSpeed = new Vector3(0, 0, 0);
+					clampedSpeed.x = Mathf.Clamp(selectedItem.GetComponent<Rigidbody>().velocity.x, 0, 2);
+					clampedSpeed.y = Mathf.Clamp(selectedItem.GetComponent<Rigidbody>().velocity.y, 0, 2);
+					clampedSpeed.z = Mathf.Clamp(selectedItem.GetComponent<Rigidbody>().velocity.z, 0, 2);
+					selectedItem.GetComponent<Rigidbody>().velocity = clampedSpeed;
+				}
 			}
 		}
+	}
+	
+	void UpdateGUI()
+	{
+		//Coin Count
+		coinCounter.SetText($"{playerCoins}");
 	}
 }

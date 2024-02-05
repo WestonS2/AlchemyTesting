@@ -8,12 +8,14 @@ using UnityEngine;
 
 public class Cauldron : MonoBehaviour
 {
-	[SerializeField] GameObject workCamera;
+	public GameObject workCamera;
 	[SerializeField] Transform potionSpawnLocation;
 	
 	public List<GameObject> itemsInCauldron = new List<GameObject>();
+	public List<GameObject> workSpaceItems = new List<GameObject>();
 	
 	bool workingMode;
+	bool spawnBuffer;
 	
 	public void ToggleInteraction()
 	{
@@ -25,6 +27,7 @@ public class Cauldron : MonoBehaviour
 	{
 		workCamera.SetActive(false);
 		workingMode = false;
+		spawnBuffer = false;
 	}
 	
 	void Update()
@@ -38,7 +41,11 @@ public class Cauldron : MonoBehaviour
 				{
 					SpawnNewPotion(recipieProduct);
 				}
-				else print("Cauldron Product Failure");
+				else
+				{
+					//print("Cauldron Product Failure");
+					print(recipieProduct);
+				}
 			}
 		}
 	}
@@ -51,6 +58,10 @@ public class Cauldron : MonoBehaviour
 	void SpawnNewPotion(ItemData.ITEM potion)
 	{
 		Instantiate(GameManager.instance.itemPrefabs[potion], potionSpawnLocation.position, GameManager.instance.itemPrefabs[potion].transform.rotation);
+		foreach(GameObject ingr in itemsInCauldron)
+		{
+			Destroy(ingr);
+		}
 		itemsInCauldron = new List<GameObject>();
 	}
 	
@@ -61,8 +72,33 @@ public class Cauldron : MonoBehaviour
 			if(col.gameObject.tag == "Item")
 			{
 				itemsInCauldron.Add(col.gameObject);
+				workSpaceItems.Remove(col.gameObject);
 				col.gameObject.SetActive(false);
 			}
 		}
+	}
+	
+	public void ResetIngredients()
+	{
+		if(!spawnBuffer) StartCoroutine(SpawnBuffer());
+	}
+	
+	IEnumerator SpawnBuffer()
+	{
+		spawnBuffer = true;
+		foreach(GameObject ingredient in itemsInCauldron)
+		{
+			ingredient.transform.position = potionSpawnLocation.position;
+			ingredient.SetActive(true);
+			yield return new WaitForSeconds(0.5f);
+		}
+		foreach(GameObject ingredient in workSpaceItems)
+		{
+			ingredient.transform.position = potionSpawnLocation.position;
+			ingredient.SetActive(true);
+			yield return new WaitForSeconds(0.5f);
+		}
+		itemsInCauldron = new List<GameObject>();
+		spawnBuffer = false;
 	}
 }
