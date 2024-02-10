@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
 	public static GameManager instance;
 	
-	public enum PlayerState {FreeRoam, WorkMode}
+	public enum PlayerState {FreeRoam, WorkMode, ShopMode}
 	public PlayerState playerState;
 	
 	public int playerCoins;
@@ -74,6 +74,11 @@ public class GameManager : MonoBehaviour
 						playerState = PlayerState.WorkMode;
 					}
 					
+					if(hit.collider.gameObject.tag == "Shop")
+					{
+						hit.collider.gameObject.GetComponent<Shop>().ToggleShop();
+					}
+					
 					if(hit.collider.gameObject.tag == "Item" && hit.collider.gameObject.GetComponent<ItemData>().Item == ItemData.ITEM.Coin)
 					{
 						playerCoins++;
@@ -127,6 +132,14 @@ public class GameManager : MonoBehaviour
 					selectedItem.GetComponent<Rigidbody>().velocity = clampedSpeed;
 				}
 			}
+		}
+		
+		else if(playerState == PlayerState.ShopMode)
+		{
+			if(playerObject.activeSelf) playerObject.SetActive(false);
+			if(!GUI.activeSelf) GUI.SetActive(true);
+			if(Cursor.lockState == CursorLockMode.Locked) Cursor.lockState = CursorLockMode.None;
+			if(!Cursor.visible) Cursor.visible = true;
 		}
 	}
 	
