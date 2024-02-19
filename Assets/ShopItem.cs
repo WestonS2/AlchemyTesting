@@ -8,7 +8,7 @@ public class ShopItem : MonoBehaviour
 	public ItemData.ITEM item;
 	[SerializeField] int itemCost;
 	[SerializeField] TextMeshProUGUI itemValue;
-	[SerializeField] Shop shopScript;
+	[SerializeField] Cupboard cupboardScript;
 	
 	void Awake()
 	{
@@ -20,7 +20,7 @@ public class ShopItem : MonoBehaviour
 		if(GameManager.instance.playerCoins >= itemCost)
 		{
 			GameManager.instance.playerCoins -= itemCost;
-			shopScript.AddItemToInventory(item);
+			cupboardScript.AddItemToInventory(item);
 		}
 	}
 }

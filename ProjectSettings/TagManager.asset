@@ -7,7 +7,7 @@ TagManager:
   - Ground
   - Item
   - Cauldron
-  - Shop
+  - Cupboard
   layers:
   - Default
   - TransparentFX

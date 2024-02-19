@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
 	public static GameManager instance;
 	
-	public enum PlayerState {FreeRoam, WorkMode, ShopMode}
+	public enum PlayerState {FreeRoam, WorkMode, CupboardMode}
 	public PlayerState playerState;
 	
 	public int playerCoins;
@@ -74,9 +74,14 @@ public class GameManager : MonoBehaviour
 						playerState = PlayerState.WorkMode;
 					}
 					
-					if(hit.collider.gameObject.tag == "Shop")
+					if(hit.collider.gameObject.tag == "Cupboard")
 					{
-						hit.collider.gameObject.GetComponent<Shop>().ToggleShop();
+						hit.collider.gameObject.GetComponent<Cupboard>().ToggleCupboard();
+					}
+					
+					if(hit.collider.gameObject.tag == "ShopFront" || hit.collider.gameObject.tag == "NPC")
+					{
+						ShopFront.ToggleShopFront();
 					}
 					
 					if(hit.collider.gameObject.tag == "Item" && hit.collider.gameObject.GetComponent<ItemData>().Item == ItemData.ITEM.Coin)
@@ -134,7 +139,7 @@ public class GameManager : MonoBehaviour
 			}
 		}
 		
-		else if(playerState == PlayerState.ShopMode)
+		else if(playerState == PlayerState.CupboardMode)
 		{
 			if(playerObject.activeSelf) playerObject.SetActive(false);
 			if(!GUI.activeSelf) GUI.SetActive(true);
