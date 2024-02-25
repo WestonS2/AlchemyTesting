@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
 	public static GameManager instance;
 	
-	public enum PlayerState {FreeRoam, WorkMode, CupboardMode}
+	public enum PlayerState {FreeRoam, WorkMode, CupboardMode, ShopMode}
 	public PlayerState playerState;
 	
 	public int playerCoins;
@@ -15,10 +15,11 @@ public class GameManager : MonoBehaviour
 	public IDictionary<ItemData.ITEM, GameObject> itemPrefabs = new Dictionary<ItemData.ITEM, GameObject>();
 	
 	[Header("General Game Variables")]
-	[SerializeField] float interactionDistance;
+	public float interactionDistance;
 	[SerializeField] float itemCursorFollowSpeed;
 	[Header("Key Game Objects")]
 	public GameObject GUI;
+	[SerializeField] ShopFront shopFront;
 	[SerializeField] TextMeshProUGUI coinCounter;
 	[Header("Item Prefabs")]
 	[SerializeField] List<GameObject> itemObjects = new List<GameObject>();
@@ -81,7 +82,7 @@ public class GameManager : MonoBehaviour
 					
 					if(hit.collider.gameObject.tag == "ShopFront" || hit.collider.gameObject.tag == "NPC")
 					{
-						ShopFront.ToggleShopFront();
+						shopFront.ToggleShopFront();
 					}
 					
 					if(hit.collider.gameObject.tag == "Item" && hit.collider.gameObject.GetComponent<ItemData>().Item == ItemData.ITEM.Coin)
@@ -139,7 +140,7 @@ public class GameManager : MonoBehaviour
 			}
 		}
 		
-		else if(playerState == PlayerState.CupboardMode)
+		else if(playerState == PlayerState.CupboardMode || playerState == PlayerState.ShopMode)
 		{
 			if(playerObject.activeSelf) playerObject.SetActive(false);
 			if(!GUI.activeSelf) GUI.SetActive(true);

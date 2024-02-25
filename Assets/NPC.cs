@@ -9,14 +9,13 @@ public class NPC : MonoBehaviour
 	
 	[HideInInspector] public ItemData.ITEM wantedItem;
 	[HideInInspector] public TextAsset dialogue;
+	[HideInInspector] public int pathPosition;
 	
 	[SerializeField] float npcSpeed;
 	
 	Rigidbody npcRB;
 	
 	Vector3 moveDirection;
-	
-	int pathPosition;
 	
 	bool served;
 	
@@ -66,20 +65,28 @@ public class NPC : MonoBehaviour
 	
 	void FollowPath(List<Transform> pathTargets)
 	{
-		if(Vector3.Distance(pathTargets[pathPosition].position, transform.position) < 0.15f)
+		foreach(GameObject npc in NPC_Events.activeNPC)
+		{
+			if(npc != this.gameObject && npc.GetComponent<NPC>().pathPosition == pathPosition)
+			{
+				return;
+			}
+		}
+		
+		if(transform.parent != pathTargets[pathPosition])
+		{
+			transform.parent = pathTargets[pathPosition];
+		}
+		
+		if(Vector3.Distance(pathTargets[pathPosition].position, transform.position) < 0.3f)
 		{
 			if(pathPosition >= pathTargets.Count - 1)
 			{
 				NpcState = NPCSTATE.Customer;
+				ShopFront.currentCustomer = this.gameObject;
 				return;
 			}
-			pathPosition++;
-		}
-		
-		if(pathTargets[pathPosition].childCount != 0) return;
-		else if(transform.parent != pathTargets[pathPosition])
-		{
-			transform.parent = pathTargets[pathPosition];
+			else pathPosition++;
 		}
 		
 		moveDirection = (pathTargets[pathPosition].position - transform.position).normalized * npcSpeed * Time.deltaTime;

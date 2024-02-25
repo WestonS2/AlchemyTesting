@@ -48,7 +48,6 @@ public class NPC_Events : MonoBehaviour
 	void SpawnNewNPC()
 	{
 		GameObject newNPC = Instantiate(npcPrefab, spawnPoint.position, spawnPoint.rotation);
-		//newNPC.transform.parent = transform;
 		GameObject randomModel = Instantiate(npcModels[Random.Range(0, npcModels.Count)], newNPC.transform.position, newNPC.transform.rotation);
 		randomModel.transform.parent = newNPC.transform;
 		activeNPC.Add(newNPC);
