@@ -9,6 +9,9 @@ public class NPC_Events : MonoBehaviour
 	public static List<Transform> exitPathTargets = new List<Transform>();
 	
 	[SerializeField] List<GameObject> npcModels = new List<GameObject>();
+	[Header("Event Parameters")]
+	[SerializeField] int eventsPerDay;
+	[SerializeField] float timeBetweenEvents;
 	[Header("NPC Dialogue")]
 	[SerializeField] List<TextAsset> healthPotionDialogue = new List<TextAsset>();
 	[SerializeField] List<TextAsset> firePotionDialogue = new List<TextAsset>();
@@ -42,7 +45,15 @@ public class NPC_Events : MonoBehaviour
 		dialogueOptions.Add(growthPotionDialogue);
 		dialogueOptions.Add(luckPotionDialogue);
 		
+		StartCoroutine(EventTiming());
+	}
+	
+	IEnumerator EventTiming()
+	{
+		yield return new WaitForSeconds(timeBetweenEvents);
 		SpawnNewNPC();
+		eventsPerDay--;
+		StartCoroutine(EventTiming());
 	}
 		
 	void SpawnNewNPC()

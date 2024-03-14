@@ -7,6 +7,8 @@ public class NPC : MonoBehaviour
 	public enum NPCSTATE {Idle, FollowPath, Customer};
 	public NPCSTATE NpcState;
 	
+	List<bool> positionFree = new List<bool>();
+		
 	[HideInInspector] public ItemData.ITEM wantedItem;
 	[HideInInspector] public TextAsset dialogue;
 	[HideInInspector] public int pathPosition;
@@ -25,9 +27,12 @@ public class NPC : MonoBehaviour
 		
 		served = false;
 		
-		transform.parent = NPC_Events.enterPathTargets[0];
-		
 		npcRB = GetComponent<Rigidbody>();
+		
+		foreach(Transform point in NPC_Events.enterPathTargets)
+		{
+			positionFree.Add(false);
+		}
 	}
 	
 	void Update()
@@ -35,6 +40,7 @@ public class NPC : MonoBehaviour
 		switch(NpcState)
 		{
 			case NPCSTATE.Idle:
+				Idle();
 				break;
 				
 			case NPCSTATE.FollowPath:
@@ -50,11 +56,6 @@ public class NPC : MonoBehaviour
 		}
 	}
 	
-	void FixedUpdate()
-	{
-		//npcRB.velocity = moveDirection;
-	}
-	
 	public bool Serve(ItemData.ITEM servedItem)
 	{
 		served = true;
@@ -63,22 +64,24 @@ public class NPC : MonoBehaviour
 		else return false;
 	}
 	
+	void Idle()
+	{
+		if(!positionFree[pathPosition])
+		{
+			NpcState = NPCSTATE.FollowPath;
+			return;
+		}
+	}
+	
 	void FollowPath(List<Transform> pathTargets)
 	{
-		foreach(GameObject npc in NPC_Events.activeNPC)
+		if(positionFree[pathPosition + 1])
 		{
-			if(npc != this.gameObject && npc.GetComponent<NPC>().pathPosition == pathPosition)
-			{
-				return;
-			}
+			NpcState = NPCSTATE.Idle;
+			return;
 		}
 		
-		if(transform.parent != pathTargets[pathPosition])
-		{
-			transform.parent = pathTargets[pathPosition];
-		}
-		
-		if(Vector3.Distance(pathTargets[pathPosition].position, transform.position) < 0.3f)
+		if(Vector3.Distance(pathTargets[pathPosition].position, transform.position) < 0.2f)
 		{
 			if(pathPosition >= pathTargets.Count - 1)
 			{
@@ -86,7 +89,12 @@ public class NPC : MonoBehaviour
 				ShopFront.currentCustomer = this.gameObject;
 				return;
 			}
-			else pathPosition++;
+			else
+			{
+				positionFree[pathPosition] = false;
+				pathPosition++;
+				positionFree[pathPosition] = true;
+			}
 		}
 		
 		moveDirection = (pathTargets[pathPosition].position - transform.position).normalized * npcSpeed * Time.deltaTime;
