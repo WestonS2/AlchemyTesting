@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 1239926767840375319}
   - component: {fileID: 3466342382234878958}
   - component: {fileID: 4839045095722688665}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cupboard
   m_TagString: Cupboard
   m_Icon: {fileID: 0}

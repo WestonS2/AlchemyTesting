@@ -7,6 +7,8 @@ public class NPC : MonoBehaviour
 	public enum NPCSTATE {Idle, FollowPath, Customer};
 	public NPCSTATE NpcState;
 	
+	public bool served;
+	
 	List<bool> positionFree = new List<bool>();
 		
 	[HideInInspector] public ItemData.ITEM wantedItem;
@@ -18,8 +20,6 @@ public class NPC : MonoBehaviour
 	Rigidbody npcRB;
 	
 	Vector3 moveDirection;
-	
-	bool served;
 	
 	void Awake()
 	{

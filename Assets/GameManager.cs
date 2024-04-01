@@ -7,27 +7,40 @@ public class GameManager : MonoBehaviour
 {
 	public static GameManager instance;
 	
-	public enum PlayerState {FreeRoam, WorkMode, CupboardMode, ShopMode}
-	public PlayerState playerState;
+	public enum GAMESTATE {Menu, InGame};
+	public GAMESTATE GameState;
+	
+	public enum PLAYERSTATE {FreeRoam, WorkMode, CupboardMode, ShopMode, Inventory};
+	public PLAYERSTATE PlayerState;
 	
 	public int playerCoins;
 	
 	public IDictionary<ItemData.ITEM, GameObject> itemPrefabs = new Dictionary<ItemData.ITEM, GameObject>();
+	public IDictionary<ItemData.ITEM, Texture> itemIcons = new Dictionary<ItemData.ITEM, Texture>();
 	
-	[Header("General Game Variables")]
-	public float interactionDistance;
-	[SerializeField] float itemCursorFollowSpeed;
+	//[Header("General Game Variables")]
 	[Header("Key Game Objects")]
 	public GameObject GUI;
+	[SerializeField] GameObject crosshairUI;
 	[SerializeField] ShopFront shopFront;
 	[SerializeField] TextMeshProUGUI coinCounter;
+	[Header("NPC Events")]
+	public int dayIndex;
+	[SerializeField] int eventIncreasePerDay;
+	[SerializeField] float decreaseTimeBetweenSpawns;
+	[SerializeField] private int eventsPerDay;
+	[SerializeField] private float timeBetweenEvents;
 	[Header("Item Prefabs")]
 	[SerializeField] List<GameObject> itemObjects = new List<GameObject>();
+	[Header("Item Icons")]
+	[SerializeField] List<Texture> itemImages = new List<Texture>();
 	
+	//Player objects
 	GameObject playerObject;
-	GameObject cauldron;
-	GameObject selectedItem;
-	GameObject workCamera;
+	Transform playerCamera;
+	Transform playerBody;
+	
+	[HideInInspector] public GameObject workCamera;
 
 	void Awake()
 	{
@@ -40,113 +53,137 @@ public class GameManager : MonoBehaviour
 		DontDestroyOnLoad(this);
 		
 		//Assigning prefabs to item type
+		int iconCount = 0;
 		foreach(GameObject itemObj in itemObjects)
 		{
 			itemPrefabs.Add(itemObj.GetComponent<ItemData>().Item, itemObj);
+			if(itemObj.GetComponent<ItemData>().Item != ItemData.ITEM.Coin)
+				itemIcons.Add(itemObj.GetComponent<ItemData>().Item, itemImages[iconCount]);
+			if(iconCount + 1 >= itemImages.Count) iconCount++;
 		}
 	}
 	
 	void Update()
 	{
+		if(Input.GetKeyDown(KeyCode.Alpha1)) GameManager.instance.Save();
+		switch(GameState)
+		{
+			case GAMESTATE.Menu:
+				MenuBehaviour();
+				break;
+				
+			case GAMESTATE.InGame:
+				InGameBehaviour();
+				break;
+				
+			default:
+				print("Critical Game State Error!");
+				break;
+		}
+	}
+	
+	void MenuBehaviour()
+	{
+		// Menu conditions
+	}
+	
+	void InGameBehaviour()
+	{
 		UpdateGUI();
 		
-		//Find Player Object
-		if(playerObject == null) playerObject = GameObject.FindWithTag("Player");
+		LocatePlayer();
 		
-		//Player State Management
-		if(playerState == PlayerState.FreeRoam)
+		#region Player State
+		switch(PlayerState)
 		{
-			if(!playerObject.activeSelf) playerObject.SetActive(true);
-			if(!GUI.activeSelf) GUI.SetActive(true);
-			if(Cursor.lockState != CursorLockMode.Locked) Cursor.lockState = CursorLockMode.Locked;
-			if(Cursor.visible) Cursor.visible = false;
-			if(workCamera != null && workCamera.activeSelf) workCamera.SetActive(false);
-			
-			//General Interaction
-			if(Controls.isInteracting)
-			{
-				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hit, interactionDistance))
-				{
-					if(hit.collider.gameObject.tag == "Cauldron")
-					{
-						cauldron = hit.collider.gameObject;
-						hit.collider.gameObject.GetComponent<Cauldron>().ToggleInteraction();
-						workCamera = hit.collider.gameObject.GetComponent<Cauldron>().workCamera;
-						playerState = PlayerState.WorkMode;
-					}
-					
-					if(hit.collider.gameObject.tag == "Cupboard")
-					{
-						hit.collider.gameObject.GetComponent<Cupboard>().ToggleCupboard();
-					}
-					
-					if(hit.collider.gameObject.tag == "ShopFront" || hit.collider.gameObject.tag == "NPC")
-					{
-						shopFront.ToggleShopFront();
-					}
-					
-					if(hit.collider.gameObject.tag == "Item" && hit.collider.gameObject.GetComponent<ItemData>().Item == ItemData.ITEM.Coin)
-					{
-						playerCoins++;
-						Destroy(hit.collider.gameObject);
-					}
-				}
-			}
-		}
-		else if(playerState == PlayerState.WorkMode)
-		{
-			if(playerObject.activeSelf) playerObject.SetActive(false);
-			if(GUI.activeSelf) GUI.SetActive(false);
-			if(Cursor.lockState == CursorLockMode.Locked) Cursor.lockState = CursorLockMode.None;
-			if(!Cursor.visible) Cursor.visible = true;
-			
-			//Exit Work Mode
-			if(Input.GetKeyDown(KeyCode.Escape)) playerState = PlayerState.FreeRoam;
-			
-			//Work Space Interaction
-			if(Input.GetMouseButtonDown(0))
-			{
-				selectedItem = null;
-				Ray mousePosition = Camera.main.ScreenPointToRay(Input.mousePosition);
-				if(Physics.Raycast(mousePosition.origin, mousePosition.direction, out RaycastHit hit, 10, LayerMask.GetMask("Interactables")))
-				{
-					if(hit.collider.gameObject.tag == "Item")
-					{
-						selectedItem = hit.collider.gameObject;
-					}
-				}
-			}
-			else if(Input.GetMouseButtonUp(0) && selectedItem != null)
-			{
-				selectedItem = null;
-			}
-			
-			if(selectedItem != null)
-			{
-				Ray mousePosition = Camera.main.ScreenPointToRay(Input.mousePosition);
-				if(Physics.Raycast(mousePosition.origin, mousePosition.direction, out RaycastHit hit, 10, LayerMask.GetMask("WorkStation")))
-				{
-					selectedItem.GetComponent<Rigidbody>().AddForce((hit.point - selectedItem.transform.position) * itemCursorFollowSpeed);
-				}
+			case PLAYERSTATE.FreeRoam:
+				FreeRoam();
+				break;
 				
-				if(Vector3.Distance(hit.point, selectedItem.transform.position) < 0.2f)
-				{
-					Vector3 clampedSpeed = new Vector3(0, 0, 0);
-					clampedSpeed.x = Mathf.Clamp(selectedItem.GetComponent<Rigidbody>().velocity.x, 0, 2);
-					clampedSpeed.y = Mathf.Clamp(selectedItem.GetComponent<Rigidbody>().velocity.y, 0, 2);
-					clampedSpeed.z = Mathf.Clamp(selectedItem.GetComponent<Rigidbody>().velocity.z, 0, 2);
-					selectedItem.GetComponent<Rigidbody>().velocity = clampedSpeed;
-				}
-			}
+			case PLAYERSTATE.Inventory:
+				InventoryInteract();
+				break;
+				
+			case PLAYERSTATE.WorkMode:
+				WorkMode();
+				break;
+				
+			case PLAYERSTATE.CupboardMode | PLAYERSTATE.ShopMode:
+				Interaction();
+				break;
+				
+			default:
+				break;
 		}
-		
-		else if(playerState == PlayerState.CupboardMode || playerState == PlayerState.ShopMode)
+		#endregion
+	}
+	
+	public void NextDay()
+	{
+		dayIndex++;
+		NPC_Events.eventsPerDay = eventsPerDay;
+		NPC_Events.timeBetweenEvents = timeBetweenEvents;
+		eventsPerDay += eventIncreasePerDay;
+		timeBetweenEvents -= decreaseTimeBetweenSpawns;
+	}
+	
+	void LocatePlayer()
+	{
+		if(playerObject == null)
 		{
-			if(playerObject.activeSelf) playerObject.SetActive(false);
-			if(!GUI.activeSelf) GUI.SetActive(true);
-			if(Cursor.lockState == CursorLockMode.Locked) Cursor.lockState = CursorLockMode.None;
-			if(!Cursor.visible) Cursor.visible = true;
+			playerObject = GameObject.FindWithTag("Player");
+			playerCamera = playerObject.transform.GetChild(0);
+			playerBody = playerObject.transform.GetChild(1);
 		}
+	}
+	
+	void FreeRoam()
+	{
+		if(!playerObject.GetComponent<PlayerMovement>().enabled) playerObject.GetComponent<PlayerMovement>().enabled = true;
+		if(!playerObject.GetComponent<PlayerCamera>().enabled) playerObject.GetComponent<PlayerCamera>().enabled = true;
+		if(!playerCamera.gameObject.activeSelf) playerCamera.gameObject.SetActive(true);
+		if(!playerBody.gameObject.activeSelf) playerBody.gameObject.SetActive(true);
+		if(!GUI.activeSelf) GUI.SetActive(true);
+		if(!crosshairUI.activeSelf) crosshairUI.SetActive(true);
+		if(Cursor.lockState != CursorLockMode.Locked) Cursor.lockState = CursorLockMode.Locked;
+		if(Cursor.visible) Cursor.visible = false;
+		if(workCamera != null && workCamera.activeSelf) workCamera.SetActive(false);
+	}
+	
+	void WorkMode()
+	{
+		if(playerObject.GetComponent<PlayerMovement>().enabled) playerObject.GetComponent<PlayerMovement>().enabled = false;
+		if(playerObject.GetComponent<PlayerCamera>().enabled) playerObject.GetComponent<PlayerCamera>().enabled = false;
+		if(playerCamera.gameObject.activeSelf) playerCamera.gameObject.SetActive(false);
+		if(playerBody.gameObject.activeSelf) playerBody.gameObject.SetActive(false);
+		if(!GUI.activeSelf) GUI.SetActive(true);
+		if(crosshairUI.activeSelf) crosshairUI.SetActive(false);
+		if(Cursor.lockState == CursorLockMode.Locked) Cursor.lockState = CursorLockMode.None;
+		if(!Cursor.visible) Cursor.visible = true;
+	}
+	
+	void InventoryInteract()
+	{
+		if(playerObject.GetComponent<PlayerMovement>().enabled) playerObject.GetComponent<PlayerMovement>().enabled = false;
+		if(playerObject.GetComponent<PlayerCamera>().enabled) playerObject.GetComponent<PlayerCamera>().enabled = false;
+		if(!playerCamera.gameObject.activeSelf) playerCamera.gameObject.SetActive(true);
+		if(!playerBody.gameObject.activeSelf) playerBody.gameObject.SetActive(true);
+		if(!GUI.activeSelf) GUI.SetActive(true);
+		if(crosshairUI.activeSelf) crosshairUI.SetActive(false);
+		if(Cursor.lockState == CursorLockMode.Locked) Cursor.lockState = CursorLockMode.None;
+		if(!Cursor.visible) Cursor.visible = true;
+	}
+	
+	void Interaction()
+	{
+		if(playerObject.GetComponent<PlayerMovement>().enabled) playerObject.GetComponent<PlayerMovement>().enabled = false;
+		if(playerObject.GetComponent<PlayerCamera>().enabled) playerObject.GetComponent<PlayerCamera>().enabled = false;
+		if(playerCamera.gameObject.activeSelf) playerCamera.gameObject.SetActive(false);
+		if(playerBody.gameObject.activeSelf) playerBody.gameObject.SetActive(false);
+		if(!GUI.activeSelf) GUI.SetActive(true);
+		if(crosshairUI.activeSelf) crosshairUI.SetActive(false);
+		if(Cursor.lockState == CursorLockMode.Locked) Cursor.lockState = CursorLockMode.None;
+		if(!Cursor.visible) Cursor.visible = true;
 	}
 	
 	void UpdateGUI()
@@ -154,4 +191,21 @@ public class GameManager : MonoBehaviour
 		//Coin Count
 		coinCounter.SetText($"{playerCoins}");
 	}
+	
+	#region Save & Load
+	public void Save()
+	{
+		SaveData data = new SaveData();
+		
+		data.coins = playerCoins;
+		//if(Inventory.instance != null)
+		data.items = Inventory.instance.storedItems;
+		data.day = dayIndex;
+		data.eventsInDay = eventsPerDay;
+		data.spawnTime = timeBetweenEvents;
+		
+		SaveSystem.SavePlayerData(data);
+		print($"<size=15>Game Saved</size>\n{Application.persistentDataPath}/SaveData.json");
+	}
+	#endregion
 }

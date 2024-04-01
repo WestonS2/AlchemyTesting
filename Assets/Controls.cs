@@ -4,24 +4,35 @@ using UnityEngine;
 
 public class Controls : MonoBehaviour
 {
+	public static IDictionary<KeyCode, KeyCode> keyCoordination = new Dictionary<KeyCode, KeyCode>();
+	public static IDictionary<int, int> mouseCoordination = new Dictionary<int, int>();
+	
+	#region Directional Movement
+	public static KeyCode forwardMove = KeyCode.W;
+	public static KeyCode backwardMove = KeyCode.S;
+	public static KeyCode rightStrafe = KeyCode.D;
+	public static KeyCode leftStrafe = KeyCode.A;
+	#endregion
+	
 	public static KeyCode generalInteraction = KeyCode.E;
-	public static KeyCode exit = KeyCode.Escape;
+	public static KeyCode inventoryKey = KeyCode.Tab;
+	public static KeyCode exitKey = KeyCode.Escape;
 	
 	public static int pickUpMouseKey = 0;
 	
-	public static bool isInteracting;
-	public static bool pickingUp;
-	public static bool isExiting;
-	
-	void Update()
+	void Start()
 	{
-		if(Input.GetKey(generalInteraction)) isInteracting = true;
-		else isInteracting = false;
+		//Keys
+		keyCoordination.Add(forwardMove, KeyCode.W);
+		keyCoordination.Add(backwardMove, KeyCode.S);
+		keyCoordination.Add(leftStrafe, KeyCode.A);
+		keyCoordination.Add(rightStrafe, KeyCode.D);
 		
-		if(Input.GetMouseButton(pickUpMouseKey)) pickingUp = true;
-		else pickingUp = false;
+		keyCoordination.Add(generalInteraction, KeyCode.E);
+		keyCoordination.Add(inventoryKey, KeyCode.Tab);
+		keyCoordination.Add(exitKey, KeyCode.Escape);
 		
-		if(Input.GetKey(exit)) isExiting = true;
-		else isExiting = false;
+		//Mouse
+		mouseCoordination.Add(pickUpMouseKey, 0);
 	}
 }

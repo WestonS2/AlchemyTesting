@@ -47,16 +47,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerState: 0
   playerCoins: 0
-  interactionDistance: 5
   itemCursorFollowSpeed: 10
   GUI: {fileID: 0}
+  crosshairUI: {fileID: 0}
   shopFront: {fileID: 0}
   coinCounter: {fileID: 0}
+  dayIndex: 0
+  eventIncreasePerDay: 1
+  decreaseTimeBetweenSpawns: 0.1
+  eventsPerDay: 2
+  timeBetweenEvents: 60
   itemObjects:
   - {fileID: 4790401070038677443, guid: c4e7f661cbfb11547b84c9ff164720f8, type: 3}
   - {fileID: 3411594592141854441, guid: fc78f481009daa44abd65b7bf7777d2c, type: 3}
   - {fileID: 3411594592141854441, guid: 5f4349442019de2418418120a2a7be40, type: 3}
-  - {fileID: 383963153046179297, guid: c51ec068bfeb3d642b3e90865cca8496, type: 3}
   - {fileID: 3367556483428645222, guid: 40e446976b193ad40878bbe256f25e3e, type: 3}
   - {fileID: 3367556483428645222, guid: 14e0d43b601d7f6498dac5e586e29e77, type: 3}
   - {fileID: 3367556483428645222, guid: d093acd56ae878e43b97abb42ef262e5, type: 3}
@@ -71,6 +75,26 @@ MonoBehaviour:
   - {fileID: 3367556483428645222, guid: 5bc26ec8d80cfc64a897d84f00f41261, type: 3}
   - {fileID: 3367556483428645222, guid: 3a46751834e104248aec7104571a47d2, type: 3}
   - {fileID: 3367556483428645222, guid: af36418849824ec4b92011e740741c3d, type: 3}
+  - {fileID: 383963153046179297, guid: c51ec068bfeb3d642b3e90865cca8496, type: 3}
+  itemImages:
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
+  workCamera: {fileID: 0}
 --- !u!114 &7852742553530444821
 MonoBehaviour:
   m_ObjectHideFlags: 0

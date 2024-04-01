@@ -4,18 +4,17 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+	public static Vector3 _moveDirection;
+	
 	[Header("Movement Variables")]
 	[SerializeField] float walkSpeed;
 	[SerializeField] float sprintMultiplier;
 	[Header("Other")]
+	public Transform playerBody;
 	
 	Rigidbody playerRB;
-	Vector3 moveDirection;
 	
 	float playerSpeed;
-	
-	float horizontal;
-	float vertical;
 	
 	void Start()
 	{
@@ -24,17 +23,42 @@ public class PlayerMovement : MonoBehaviour
 	
 	void Update()
 	{
-		horizontal = Input.GetAxis("Horizontal");
-		vertical = Input.GetAxis("Vertical");
-		
-		if(Input.GetKey(KeyCode.LeftShift)) playerSpeed = walkSpeed * sprintMultiplier;
-		else playerSpeed = walkSpeed;
-		moveDirection = Camera.main.transform.forward * vertical * playerSpeed + Camera.main.transform.right * horizontal * playerSpeed;
-		moveDirection.y = 0;
+		Movement();
 	}
 	
 	void FixedUpdate()
 	{
-		playerRB.AddForce(moveDirection * Time.deltaTime);
+		playerRB.AddForce(_moveDirection);
+		_moveDirection = new Vector3(0, 0, 0);
+	}
+	
+	void Movement()
+	{
+		if(Input.GetKey(KeyCode.LeftShift)) playerSpeed = walkSpeed * sprintMultiplier;
+		else playerSpeed = walkSpeed;
+		
+		#region Linear Movement
+		if(Input.GetKey(Controls.keyCoordination[Controls.forwardMove]))
+		{
+			_moveDirection += playerBody.forward * playerSpeed;
+		}
+		else if(Input.GetKey(Controls.keyCoordination[Controls.backwardMove]))
+		{
+			_moveDirection += -playerBody.forward * playerSpeed;
+		}
+		#endregion
+		#region Strafe Movement
+		if(Input.GetKey(Controls.keyCoordination[Controls.rightStrafe]))
+		{
+			_moveDirection += playerBody.right * playerSpeed;
+		}
+		else if(Input.GetKey(Controls.keyCoordination[Controls.leftStrafe]))
+		{
+			_moveDirection += -playerBody.right * playerSpeed;
+		}
+		#endregion
+		
+		_moveDirection.y = 0;
+		_moveDirection *= Time.deltaTime * 100;
 	}
 }

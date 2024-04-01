@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4565388654667848477}
   - component: {fileID: 1040199531766695828}
   - component: {fileID: 8568640486384227249}
+  - component: {fileID: 5005476577166663074}
   m_Layer: 6
   m_Name: Lavender
   m_TagString: Item
@@ -75,6 +76,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &5005476577166663074
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3367556483428645222}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.4267744, y: 3.3474917, z: 0.42675734}
+  m_Center: {x: -0.0045493944, y: 0.8461906, z: -0.0045478344}
 --- !u!1 &6022177380582015242
 GameObject:
   m_ObjectHideFlags: 0
@@ -87,7 +109,7 @@ GameObject:
   - component: {fileID: 502137410267484437}
   - component: {fileID: 5776668772479302119}
   - component: {fileID: 4714258168661322962}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,9 +211,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 131227928748197707}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: LimestoneModel
-  m_TagString: Item
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -225,7 +247,7 @@ GameObject:
   - component: {fileID: 7088213476443662887}
   - component: {fileID: 74919324073651365}
   - component: {fileID: 7157113487739808787}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

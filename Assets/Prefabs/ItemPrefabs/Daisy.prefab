@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1750855821882453336}
   - component: {fileID: 2404430500844835106}
   - component: {fileID: 6565821616069647726}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,7 +117,7 @@ GameObject:
   - component: {fileID: 6645732533461174261}
   - component: {fileID: 6972106127171773454}
   - component: {fileID: 4126588221799920813}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,7 +222,7 @@ GameObject:
   - component: {fileID: 1794336740459592621}
   - component: {fileID: 919533466466289149}
   - component: {fileID: 8437693557564777288}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -327,7 +327,7 @@ GameObject:
   - component: {fileID: 7028922039995450486}
   - component: {fileID: 4593746101734251051}
   - component: {fileID: 1907715178446717845}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -431,6 +431,7 @@ GameObject:
   - component: {fileID: 4565388654667848477}
   - component: {fileID: 1040199531766695828}
   - component: {fileID: 8568640486384227249}
+  - component: {fileID: 6139043620579456155}
   m_Layer: 6
   m_Name: Daisy
   m_TagString: Item
@@ -495,6 +496,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &6139043620579456155
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3367556483428645222}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.9098796, y: 3.3019972, z: 0.79072714}
+  m_Center: {x: 0.072791055, y: 0.8234417, z: 0.0045478344}
 --- !u!1 &4153642102242428040
 GameObject:
   m_ObjectHideFlags: 0
@@ -507,7 +529,7 @@ GameObject:
   - component: {fileID: 3301546373261759449}
   - component: {fileID: 8426704509524605074}
   - component: {fileID: 8324111007223896745}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -612,7 +634,7 @@ GameObject:
   - component: {fileID: 3483517214897523402}
   - component: {fileID: 3153070828282513252}
   - component: {fileID: 6968958212996897492}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -714,9 +736,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 131227928748197707}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: LimestoneModel
-  m_TagString: Item
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -757,7 +779,7 @@ GameObject:
   - component: {fileID: 7569753508723218174}
   - component: {fileID: 4432362756881946591}
   - component: {fileID: 1713161280477293115}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -862,7 +884,7 @@ GameObject:
   - component: {fileID: 7441228895198355182}
   - component: {fileID: 805486852595688238}
   - component: {fileID: 2000470078453037463}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -967,7 +989,7 @@ GameObject:
   - component: {fileID: 7088213476443662887}
   - component: {fileID: 74919324073651365}
   - component: {fileID: 7157113487739808787}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -18,7 +18,7 @@ public class Cupboard : MonoBehaviour
 	
 	void Update()
 	{
-		if(cupboardOpen && Controls.isExiting)
+		if(cupboardOpen && Input.GetKeyDown(Controls.keyCoordination[Controls.exitKey]))
 		{
 			ToggleCupboard();
 		}
@@ -29,26 +29,24 @@ public class Cupboard : MonoBehaviour
 		cupboardOpen = !cupboardOpen;
 		if(cupboardOpen)
 		{
-			if(GameManager.instance.playerState != GameManager.PlayerState.CupboardMode)
+			if(GameManager.instance.PlayerState != GameManager.PLAYERSTATE.CupboardMode)
 			{
-				GameManager.instance.playerState = GameManager.PlayerState.CupboardMode;
+				GameManager.instance.PlayerState = GameManager.PLAYERSTATE.CupboardMode;
+				Cursor.visible = true;
+				Cursor.lockState = CursorLockMode.None;
 			}
 		}
 		else
 		{
-			if(GameManager.instance.playerState != GameManager.PlayerState.FreeRoam)
+			if(GameManager.instance.PlayerState != GameManager.PLAYERSTATE.FreeRoam)
 			{
-				GameManager.instance.playerState = GameManager.PlayerState.FreeRoam;
+				GameManager.instance.PlayerState = GameManager.PLAYERSTATE.FreeRoam;
+				Cursor.visible = false;
+				Cursor.lockState = CursorLockMode.Locked;
 			}
 		}
 		
 		cupboardUI.SetActive(cupboardOpen);
 		cupboardCamera.SetActive(cupboardOpen);
-	}
-	
-	public void AddItemToInventory(ItemData.ITEM item)
-	{
-		//To be combined with inventory script
-		print($"Item Added: {item}");
 	}
 }

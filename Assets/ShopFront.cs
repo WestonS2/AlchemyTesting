@@ -5,6 +5,8 @@ using TMPro;
 
 public class ShopFront : MonoBehaviour
 {
+	public static ShopFront instance;
+	
 	public static GameObject currentCustomer;
 	
 	IDictionary<ItemData.ITEM, int> potionValue = new Dictionary<ItemData.ITEM, int>();
@@ -19,6 +21,9 @@ public class ShopFront : MonoBehaviour
 	
 	void Start()
 	{
+		if(instance == null) instance = this;
+		else Destroy(this.gameObject);
+		
 		shopCamera.SetActive(false);
 		
 		shopOpen = false;
@@ -35,15 +40,15 @@ public class ShopFront : MonoBehaviour
 	{
 		if(shopOpen)
 		{
-			if(Controls.isExiting)
+			if(Input.GetKeyDown(Controls.exitKey))
 			{
 				ToggleShopFront();
 			}
 			
-			if(Input.GetMouseButtonDown(0))
+			if(Input.GetMouseButtonDown(Controls.pickUpMouseKey))
 			{
 				Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-				if(Physics.Raycast(mouseRay.origin, mouseRay.direction, out RaycastHit hit, GameManager.instance.interactionDistance, LayerMask.GetMask("Shop")))
+				if(Physics.Raycast(mouseRay.origin, mouseRay.direction, out RaycastHit hit, PlayerInteraction.instance.interactionDistance, LayerMask.GetMask("Shop")))
 				{
 					if(hit.collider.gameObject.tag == "NPC")
 					{
@@ -91,13 +96,13 @@ public class ShopFront : MonoBehaviour
 		
 		if(shopOpen)
 		{
-			GameManager.instance.playerState = GameManager.PlayerState.ShopMode;
+			GameManager.instance.PlayerState = GameManager.PLAYERSTATE.ShopMode;
 			shopCamera.SetActive(true);
 		}
 		else
 		{
 			shopCamera.SetActive(false);
-			GameManager.instance.playerState = GameManager.PlayerState.FreeRoam;
+			GameManager.instance.PlayerState = GameManager.PLAYERSTATE.FreeRoam;
 		}
 	}
 	

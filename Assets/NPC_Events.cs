@@ -10,8 +10,9 @@ public class NPC_Events : MonoBehaviour
 	
 	[SerializeField] List<GameObject> npcModels = new List<GameObject>();
 	[Header("Event Parameters")]
-	[SerializeField] int eventsPerDay;
-	[SerializeField] float timeBetweenEvents;
+	public static int eventsPerDay;
+	public static float timeBetweenEvents;
+	public static bool dayComplete;
 	[Header("NPC Dialogue")]
 	[SerializeField] List<TextAsset> healthPotionDialogue = new List<TextAsset>();
 	[SerializeField] List<TextAsset> firePotionDialogue = new List<TextAsset>();
@@ -25,10 +26,16 @@ public class NPC_Events : MonoBehaviour
 	[SerializeField] Transform spawnPoint;
 	[SerializeField] Transform despawnPoint;
 	
+	IEnumerator eventTimingRoutine;
+	
 	List<List<TextAsset>> dialogueOptions = new List<List<TextAsset>>();
 	
 	void Start()
 	{
+		GameManager.instance.NextDay();
+		
+		dayComplete = false;
+		
 		foreach(Transform pathPoint in enterPath)
 		{
 			enterPathTargets.Add(pathPoint);
@@ -45,15 +52,34 @@ public class NPC_Events : MonoBehaviour
 		dialogueOptions.Add(growthPotionDialogue);
 		dialogueOptions.Add(luckPotionDialogue);
 		
-		StartCoroutine(EventTiming());
+		eventTimingRoutine = EventTiming();
+		StartCoroutine(eventTimingRoutine);
 	}
 	
 	IEnumerator EventTiming()
 	{
-		yield return new WaitForSeconds(timeBetweenEvents);
+		if(eventsPerDay <= 0)
+		{
+			yield return new WaitWhile(() => activeNPC[activeNPC.Count - 1].GetComponent<NPC>().served == false);
+			EndOfDay();
+			yield return new WaitWhile(() => !dayComplete);
+			StopCoroutine(eventTimingRoutine);
+		}
 		SpawnNewNPC();
 		eventsPerDay--;
-		StartCoroutine(EventTiming());
+		yield return new WaitForSeconds(timeBetweenEvents);
+		StartCoroutine(eventTimingRoutine);
+	}
+	
+	/* Forces all npcs to get served, no pay, stops eventTimingRoutine, calls EndOfDay.
+	public void ForceEndOfDay()
+	{
+		StopCoroutine()
+	}*/
+	
+	void EndOfDay()
+	{
+		dayComplete = true;
 	}
 		
 	void SpawnNewNPC()

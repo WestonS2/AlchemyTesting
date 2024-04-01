@@ -28,6 +28,15 @@ public class ItemData : MonoBehaviour
 	}
 	public ITEM Item;
 	
+	public static IDictionary<ITEM, float> brewTime = new Dictionary<ITEM, float>()
+	{
+		{ITEM.IcePotion, 30},
+		{ITEM.FirePotion, 30},
+		{ITEM.HealthPotion, 60},
+		{ITEM.GrowthPotion, 120},
+		{ITEM.LuckPotion, 150}
+	};
+	
 	public List<ITEM> compatibleItems = new List<ITEM>();
 	
 	public bool IsRecipie(ITEM item1, ITEM item2)

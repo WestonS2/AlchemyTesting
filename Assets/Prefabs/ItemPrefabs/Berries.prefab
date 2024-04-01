@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6428633986268969964}
   - component: {fileID: 5070875639562856501}
   - component: {fileID: 7908851233444428740}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,7 +117,7 @@ GameObject:
   - component: {fileID: 8447308763744007686}
   - component: {fileID: 2069565815841314119}
   - component: {fileID: 6912702282455787172}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Sphere (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,7 +222,7 @@ GameObject:
   - component: {fileID: 5537200405479941544}
   - component: {fileID: 6651259796981259865}
   - component: {fileID: 3422884347939118544}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Sphere (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -326,6 +326,7 @@ GameObject:
   - component: {fileID: 4856651035748402201}
   - component: {fileID: 3629273801694469292}
   - component: {fileID: 4364241719166798266}
+  - component: {fileID: 5796192150024556177}
   m_Layer: 6
   m_Name: Berries
   m_TagString: Item
@@ -390,6 +391,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &5796192150024556177
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4790401070038677443}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.84626687, y: 1.0139761, z: 0.8136467}
+  m_Center: {x: 0.058233, y: 0.114137344, z: 0.046586897}
 --- !u!1 &5650326768308167808
 GameObject:
   m_ObjectHideFlags: 0
@@ -402,7 +424,7 @@ GameObject:
   - component: {fileID: 2881743963725067526}
   - component: {fileID: 2175891861381456750}
   - component: {fileID: 5544267800365544429}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -504,7 +526,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7917063703277532709}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: BerriesModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

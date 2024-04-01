@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &156428345181496626
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8826948419460964320}
+  m_Layer: 0
+  m_Name: DefaultItemDropPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8826948419460964320
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156428345181496626}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.492, z: 0.917}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6671822633236845448}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5058811286422515009
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,7 +155,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8826948419460964320}
   m_Father: {fileID: 1155526522479290945}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7526044970885670430
@@ -188,6 +220,8 @@ GameObject:
   - component: {fileID: 1155526522479290945}
   - component: {fileID: 8757642624557095475}
   - component: {fileID: 8129321566594478877}
+  - component: {fileID: 6768802813627932854}
+  - component: {fileID: 5333698033578353182}
   - component: {fileID: 7160267490657969410}
   - component: {fileID: 7813137662669508613}
   m_Layer: 0
@@ -205,7 +239,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7123823224228950322}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.34, z: 5.87}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -227,7 +261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45b3d9c5ce3548e4d92f24377e6dddb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensitivity: 10
+  sensitivity: 3
 --- !u!114 &8129321566594478877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,8 +274,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6be33e7e0b1bce84fb5950a4c5c16106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 1000
+  walkSpeed: 20
   sprintMultiplier: 2
+  playerBody: {fileID: 6671822633236845448}
+--- !u!114 &6768802813627932854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7123823224228950322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37b3cac524136614da96edae1f1bc977, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionDistance: 3
+--- !u!114 &5333698033578353182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7123823224228950322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1047ef48e9fcd2c44ad600297176aee4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemDropPoint: {x: 0, y: 0, z: 0}
+  inventoryUI: {fileID: 0}
+  defaultDropLocation: {fileID: 8826948419460964320}
+  dropBufferTime: 0.1
 --- !u!136 &7160267490657969410
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -249,7 +313,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7123823224228950322}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 0c14e94aff966584496af8622788105c, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -274,7 +338,7 @@ Rigidbody:
   m_GameObject: {fileID: 7123823224228950322}
   serializedVersion: 4
   m_Mass: 1
-  m_Drag: 7
+  m_Drag: 1
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}

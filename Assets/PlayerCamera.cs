@@ -6,6 +6,8 @@ public class PlayerCamera : MonoBehaviour
 {
 	[SerializeField] float sensitivity;
 	
+	PlayerMovement movementScript;
+	
 	Vector3 camRotation;
 	Quaternion newRotation;
 	
@@ -16,15 +18,18 @@ public class PlayerCamera : MonoBehaviour
 	{
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
+		
+		movementScript = GetComponent<PlayerMovement>();
 	}
 	
 	void Update()
 	{
-		mouseX = Input.GetAxis("Mouse X");
-		mouseY = Input.GetAxis("Mouse Y");
+		mouseX += Input.GetAxis("Mouse X") * sensitivity;
+		mouseY += Input.GetAxis("Mouse Y") * sensitivity;
+		mouseY = Mathf.Clamp(mouseY, -70, 70);
 		
 		camRotation = new Vector3(-mouseY, mouseX, 0);
-		newRotation.eulerAngles = Camera.main.transform.eulerAngles + camRotation;
-		Camera.main.transform.rotation = newRotation;
+		movementScript.playerBody.rotation = Quaternion.Euler(0, mouseX, 0);
+		Camera.main.transform.eulerAngles = camRotation;
 	}
 }

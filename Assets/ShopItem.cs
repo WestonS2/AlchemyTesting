@@ -20,7 +20,7 @@ public class ShopItem : MonoBehaviour
 		if(GameManager.instance.playerCoins >= itemCost)
 		{
 			GameManager.instance.playerCoins -= itemCost;
-			cupboardScript.AddItemToInventory(item);
+			Inventory.instance.AddItem(item, 1);
 		}
 	}
 }
