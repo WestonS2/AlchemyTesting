@@ -44,4 +44,15 @@ public static class SaveSystem
 			streamFile.Close();
 		}
 	}
+	
+	public static SaveData LoadPlayerData()
+	{
+		string path = Path.Combine(Application.persistentDataPath + "/SaveData.json");
+		
+		if(!File.Exists(path)) return null;
+		
+		string readData = File.ReadAllText(path);
+		
+		return JsonUtility.FromJson<SaveData>(readData);
+	}
 }

@@ -14,6 +14,8 @@ public class Controls : MonoBehaviour
 	public static KeyCode leftStrafe = KeyCode.A;
 	#endregion
 	
+	public static KeyCode jumpKey = KeyCode.Space;
+	
 	public static KeyCode generalInteraction = KeyCode.E;
 	public static KeyCode inventoryKey = KeyCode.Tab;
 	public static KeyCode exitKey = KeyCode.Escape;

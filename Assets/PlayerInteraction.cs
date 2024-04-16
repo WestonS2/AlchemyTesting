@@ -27,9 +27,9 @@ public class PlayerInteraction : MonoBehaviour
 	
 	void Update()
 	{
-		switch(GameManager.instance.PlayerState)
+		switch(SceneManager.instance.PlayerState)
 		{
-			case GameManager.PLAYERSTATE.WorkMode:
+			case SceneManager.PLAYERSTATE.WorkMode:
 				WorkMode();
 				break;
 				
@@ -92,18 +92,28 @@ public class PlayerInteraction : MonoBehaviour
 				{
 					print("Cauldron");
 					interactionHit.collider.gameObject.GetComponent<Cauldron>().ToggleInteraction();
-					GameManager.instance.workCamera = interactionHit.collider.gameObject.GetComponent<Cauldron>().workCamera;
-					GameManager.instance.PlayerState = GameManager.PLAYERSTATE.WorkMode;
+					SceneManager.instance.workCamera = interactionHit.collider.gameObject.GetComponent<Cauldron>().workCamera;
+					SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.WorkMode;
 				}
 				
 				if(interactionHit.collider.gameObject.tag == "Cupboard")
 				{
 					interactionHit.collider.gameObject.GetComponent<Cupboard>().ToggleCupboard();
+					SceneManager.instance.workCamera = interactionHit.collider.gameObject.GetComponent<Cupboard>().cupboardCamera;
+					SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.WorkMode;
 				}
 				
 				if(interactionHit.collider.gameObject.tag == "ShopFront" || interactionHit.collider.gameObject.tag == "NPC")
 				{
 					ShopFront.instance.ToggleShopFront();
+					SceneManager.instance.workCamera = ShopFront.instance.shopCamera;
+					SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.WorkMode;
+				}
+				
+				if(interactionHit.collider.gameObject.tag == "MortarPestle")
+				{
+					SceneManager.instance.workCamera = interactionHit.collider.gameObject.GetComponent<MortarPestle>().workCamera;
+					SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.WorkMode;
 				}
 			}
 		}

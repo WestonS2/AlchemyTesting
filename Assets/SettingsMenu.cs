@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.SceneManagement;
 
 public class SettingsMenu : MonoBehaviour
 {
@@ -19,7 +18,7 @@ public class SettingsMenu : MonoBehaviour
 	
 	public void StartGame()
 	{
-		SceneManager.LoadScene(1);
+		UnityEngine.SceneManagement.SceneManager.LoadScene(1);
 	}
 	
 	public void QuitGame()

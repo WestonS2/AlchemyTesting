@@ -274,8 +274,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6be33e7e0b1bce84fb5950a4c5c16106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 20
-  sprintMultiplier: 2
+  walkSpeed: 40
+  sprintMultiplier: 1.5
   playerBody: {fileID: 6671822633236845448}
 --- !u!114 &6768802813627932854
 MonoBehaviour:
@@ -290,6 +290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionDistance: 3
+  itemCursorFollowSpeed: 2
 --- !u!114 &5333698033578353182
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,7 +8,8 @@ public class SaveData
 {
 	// Player
 	public int coins;
-	public IDictionary<ItemData.ITEM, int> items;
+	public int[] itemKeys;
+	public int[] itemValues;
 	// Game
 	public int day;
 	public int eventsInDay;

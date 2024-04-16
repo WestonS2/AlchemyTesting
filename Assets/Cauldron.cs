@@ -68,7 +68,7 @@ public class Cauldron : MonoBehaviour
 		if(Input.GetKeyDown(KeyCode.Escape) && workingMode)
 		{
 			ToggleInteraction();
-			GameManager.instance.PlayerState = GameManager.PLAYERSTATE.FreeRoam;
+			SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.FreeRoam;
 		}
 		
 		//Toggle Inventory

@@ -5,7 +5,7 @@ using UnityEngine;
 public class Cupboard : MonoBehaviour
 {
 	[SerializeField] GameObject cupboardUI;
-	[SerializeField] GameObject cupboardCamera;
+	public GameObject cupboardCamera;
 	
 	bool cupboardOpen;
 	
@@ -29,21 +29,14 @@ public class Cupboard : MonoBehaviour
 		cupboardOpen = !cupboardOpen;
 		if(cupboardOpen)
 		{
-			if(GameManager.instance.PlayerState != GameManager.PLAYERSTATE.CupboardMode)
-			{
-				GameManager.instance.PlayerState = GameManager.PLAYERSTATE.CupboardMode;
-				Cursor.visible = true;
-				Cursor.lockState = CursorLockMode.None;
-			}
+			if(SceneManager.instance.PlayerState != SceneManager.PLAYERSTATE.WorkMode)
+				SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.WorkMode;
+
 		}
 		else
 		{
-			if(GameManager.instance.PlayerState != GameManager.PLAYERSTATE.FreeRoam)
-			{
-				GameManager.instance.PlayerState = GameManager.PLAYERSTATE.FreeRoam;
-				Cursor.visible = false;
-				Cursor.lockState = CursorLockMode.Locked;
-			}
+			if(SceneManager.instance.PlayerState != SceneManager.PLAYERSTATE.FreeRoam)
+				SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.FreeRoam;
 		}
 		
 		cupboardUI.SetActive(cupboardOpen);

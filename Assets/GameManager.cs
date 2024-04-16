@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,20 +10,12 @@ public class GameManager : MonoBehaviour
 	public enum GAMESTATE {Menu, InGame};
 	public GAMESTATE GameState;
 	
-	public enum PLAYERSTATE {FreeRoam, WorkMode, CupboardMode, ShopMode, Inventory};
-	public PLAYERSTATE PlayerState;
-	
 	public int playerCoins;
 	
 	public IDictionary<ItemData.ITEM, GameObject> itemPrefabs = new Dictionary<ItemData.ITEM, GameObject>();
 	public IDictionary<ItemData.ITEM, Texture> itemIcons = new Dictionary<ItemData.ITEM, Texture>();
 	
 	//[Header("General Game Variables")]
-	[Header("Key Game Objects")]
-	public GameObject GUI;
-	[SerializeField] GameObject crosshairUI;
-	[SerializeField] ShopFront shopFront;
-	[SerializeField] TextMeshProUGUI coinCounter;
 	[Header("NPC Events")]
 	public int dayIndex;
 	[SerializeField] int eventIncreasePerDay;
@@ -34,13 +26,6 @@ public class GameManager : MonoBehaviour
 	[SerializeField] List<GameObject> itemObjects = new List<GameObject>();
 	[Header("Item Icons")]
 	[SerializeField] List<Texture> itemImages = new List<Texture>();
-	
-	//Player objects
-	GameObject playerObject;
-	Transform playerCamera;
-	Transform playerBody;
-	
-	[HideInInspector] public GameObject workCamera;
 
 	void Awake()
 	{
@@ -65,7 +50,9 @@ public class GameManager : MonoBehaviour
 	
 	void Update()
 	{
-		if(Input.GetKeyDown(KeyCode.Alpha1)) GameManager.instance.Save();
+		// Testing Save System
+		if(Input.GetKeyDown(KeyCode.Alpha1)) GameManager.instance.Load();
+		
 		switch(GameState)
 		{
 			case GAMESTATE.Menu:
@@ -82,6 +69,15 @@ public class GameManager : MonoBehaviour
 		}
 	}
 	
+	public void NextDay()
+	{
+		dayIndex++;
+		NPC_Events.eventsToday = eventsPerDay;
+		NPC_Events.timeBetweenEvents = timeBetweenEvents;
+		eventsPerDay += eventIncreasePerDay;
+		timeBetweenEvents -= decreaseTimeBetweenSpawns;
+	}
+	
 	void MenuBehaviour()
 	{
 		// Menu conditions
@@ -89,107 +85,7 @@ public class GameManager : MonoBehaviour
 	
 	void InGameBehaviour()
 	{
-		UpdateGUI();
-		
-		LocatePlayer();
-		
-		#region Player State
-		switch(PlayerState)
-		{
-			case PLAYERSTATE.FreeRoam:
-				FreeRoam();
-				break;
-				
-			case PLAYERSTATE.Inventory:
-				InventoryInteract();
-				break;
-				
-			case PLAYERSTATE.WorkMode:
-				WorkMode();
-				break;
-				
-			case PLAYERSTATE.CupboardMode | PLAYERSTATE.ShopMode:
-				Interaction();
-				break;
-				
-			default:
-				break;
-		}
-		#endregion
-	}
-	
-	public void NextDay()
-	{
-		dayIndex++;
-		NPC_Events.eventsPerDay = eventsPerDay;
-		NPC_Events.timeBetweenEvents = timeBetweenEvents;
-		eventsPerDay += eventIncreasePerDay;
-		timeBetweenEvents -= decreaseTimeBetweenSpawns;
-	}
-	
-	void LocatePlayer()
-	{
-		if(playerObject == null)
-		{
-			playerObject = GameObject.FindWithTag("Player");
-			playerCamera = playerObject.transform.GetChild(0);
-			playerBody = playerObject.transform.GetChild(1);
-		}
-	}
-	
-	void FreeRoam()
-	{
-		if(!playerObject.GetComponent<PlayerMovement>().enabled) playerObject.GetComponent<PlayerMovement>().enabled = true;
-		if(!playerObject.GetComponent<PlayerCamera>().enabled) playerObject.GetComponent<PlayerCamera>().enabled = true;
-		if(!playerCamera.gameObject.activeSelf) playerCamera.gameObject.SetActive(true);
-		if(!playerBody.gameObject.activeSelf) playerBody.gameObject.SetActive(true);
-		if(!GUI.activeSelf) GUI.SetActive(true);
-		if(!crosshairUI.activeSelf) crosshairUI.SetActive(true);
-		if(Cursor.lockState != CursorLockMode.Locked) Cursor.lockState = CursorLockMode.Locked;
-		if(Cursor.visible) Cursor.visible = false;
-		if(workCamera != null && workCamera.activeSelf) workCamera.SetActive(false);
-	}
-	
-	void WorkMode()
-	{
-		if(playerObject.GetComponent<PlayerMovement>().enabled) playerObject.GetComponent<PlayerMovement>().enabled = false;
-		if(playerObject.GetComponent<PlayerCamera>().enabled) playerObject.GetComponent<PlayerCamera>().enabled = false;
-		if(playerCamera.gameObject.activeSelf) playerCamera.gameObject.SetActive(false);
-		if(playerBody.gameObject.activeSelf) playerBody.gameObject.SetActive(false);
-		if(!GUI.activeSelf) GUI.SetActive(true);
-		if(crosshairUI.activeSelf) crosshairUI.SetActive(false);
-		if(Cursor.lockState == CursorLockMode.Locked) Cursor.lockState = CursorLockMode.None;
-		if(!Cursor.visible) Cursor.visible = true;
-	}
-	
-	void InventoryInteract()
-	{
-		if(playerObject.GetComponent<PlayerMovement>().enabled) playerObject.GetComponent<PlayerMovement>().enabled = false;
-		if(playerObject.GetComponent<PlayerCamera>().enabled) playerObject.GetComponent<PlayerCamera>().enabled = false;
-		if(!playerCamera.gameObject.activeSelf) playerCamera.gameObject.SetActive(true);
-		if(!playerBody.gameObject.activeSelf) playerBody.gameObject.SetActive(true);
-		if(!GUI.activeSelf) GUI.SetActive(true);
-		if(crosshairUI.activeSelf) crosshairUI.SetActive(false);
-		if(Cursor.lockState == CursorLockMode.Locked) Cursor.lockState = CursorLockMode.None;
-		if(!Cursor.visible) Cursor.visible = true;
-	}
-	
-	void Interaction()
-	{
-		if(playerObject.GetComponent<PlayerMovement>().enabled) playerObject.GetComponent<PlayerMovement>().enabled = false;
-		if(playerObject.GetComponent<PlayerCamera>().enabled) playerObject.GetComponent<PlayerCamera>().enabled = false;
-		if(playerCamera.gameObject.activeSelf) playerCamera.gameObject.SetActive(false);
-		if(playerBody.gameObject.activeSelf) playerBody.gameObject.SetActive(false);
-		if(!GUI.activeSelf) GUI.SetActive(true);
-		if(crosshairUI.activeSelf) crosshairUI.SetActive(false);
-		if(Cursor.lockState == CursorLockMode.Locked) Cursor.lockState = CursorLockMode.None;
-		if(!Cursor.visible) Cursor.visible = true;
-	}
-	
-	void UpdateGUI()
-	{
-		//Coin Count
-		coinCounter.SetText($"{playerCoins}");
+		// Game conditions
 	}
 	
 	#region Save & Load
@@ -198,14 +94,51 @@ public class GameManager : MonoBehaviour
 		SaveData data = new SaveData();
 		
 		data.coins = playerCoins;
-		//if(Inventory.instance != null)
-		data.items = Inventory.instance.storedItems;
+		List<int> itemKeysConvert = new List<int>();
+		List<int> itemValuesConvert = new List<int>();
+		foreach(ItemData.ITEM item in Inventory.instance.storedItems.Keys)
+		{
+			itemKeysConvert.Add(SaveSystem.itemID[item]);
+			itemValuesConvert.Add(Inventory.instance.storedItems[item]);
+		}
+		data.itemKeys = itemKeysConvert.ToArray();
+		data.itemValues = itemValuesConvert.ToArray();
+		
 		data.day = dayIndex;
 		data.eventsInDay = eventsPerDay;
 		data.spawnTime = timeBetweenEvents;
 		
 		SaveSystem.SavePlayerData(data);
 		print($"<size=15>Game Saved</size>\n{Application.persistentDataPath}/SaveData.json");
+	}
+	
+	public bool Load()
+	{
+		SaveData data = SaveSystem.LoadPlayerData();
+		if(data == null) return false;
+		
+		playerCoins = data.coins;
+		Inventory.instance.storedItems = new Dictionary<ItemData.ITEM, int>();
+		for(int i = 0; i < data.itemKeys.Length; i++)
+		{
+			foreach(ItemData.ITEM item in SaveSystem.itemID.Keys)
+			{
+				if(SaveSystem.itemID[item] == data.itemKeys[i])
+				{
+					Inventory.instance.storedItems.Add(item, data.itemValues[i]);
+					break;
+				}
+				else continue;
+			}
+		}
+		
+		dayIndex = data.day;
+		eventsPerDay = data.eventsInDay;
+		timeBetweenEvents = data.spawnTime;
+		
+		SaveSystem.SavePlayerData(data);
+		print($"<size=15>Save Loaded</size>\n{Application.persistentDataPath}/SaveData.json");
+		return true;
 	}
 	#endregion
 }

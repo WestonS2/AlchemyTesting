@@ -11,7 +11,7 @@ public class ShopFront : MonoBehaviour
 	
 	IDictionary<ItemData.ITEM, int> potionValue = new Dictionary<ItemData.ITEM, int>();
 	
-	[SerializeField] GameObject shopCamera;
+	public GameObject shopCamera;
 	[SerializeField] GameObject shopUI;
 	[SerializeField] Transform itemSpawnLocation;
 	[SerializeField] TextMeshProUGUI npcDialogue;
@@ -48,7 +48,7 @@ public class ShopFront : MonoBehaviour
 			if(Input.GetMouseButtonDown(Controls.pickUpMouseKey))
 			{
 				Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-				if(Physics.Raycast(mouseRay.origin, mouseRay.direction, out RaycastHit hit, PlayerInteraction.instance.interactionDistance, LayerMask.GetMask("Shop")))
+				if(Physics.Raycast(mouseRay.origin, mouseRay.direction, out RaycastHit hit, 10, LayerMask.GetMask("Shop")))
 				{
 					if(hit.collider.gameObject.tag == "NPC")
 					{
@@ -96,13 +96,13 @@ public class ShopFront : MonoBehaviour
 		
 		if(shopOpen)
 		{
-			GameManager.instance.PlayerState = GameManager.PLAYERSTATE.ShopMode;
+			SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.WorkMode;
 			shopCamera.SetActive(true);
 		}
 		else
 		{
 			shopCamera.SetActive(false);
-			GameManager.instance.PlayerState = GameManager.PLAYERSTATE.FreeRoam;
+			SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.FreeRoam;
 		}
 	}
 	

@@ -10,7 +10,7 @@ public class NPC_Events : MonoBehaviour
 	
 	[SerializeField] List<GameObject> npcModels = new List<GameObject>();
 	[Header("Event Parameters")]
-	public static int eventsPerDay;
+	public static int eventsToday;
 	public static float timeBetweenEvents;
 	public static bool dayComplete;
 	[Header("NPC Dialogue")]
@@ -30,11 +30,15 @@ public class NPC_Events : MonoBehaviour
 	
 	List<List<TextAsset>> dialogueOptions = new List<List<TextAsset>>();
 	
+	bool spawnBuffer;
+	
 	void Start()
 	{
 		GameManager.instance.NextDay();
 		
 		dayComplete = false;
+		
+		spawnBuffer = false;
 		
 		foreach(Transform pathPoint in enterPath)
 		{
@@ -51,24 +55,30 @@ public class NPC_Events : MonoBehaviour
 		dialogueOptions.Add(icePotionDialogue);
 		dialogueOptions.Add(growthPotionDialogue);
 		dialogueOptions.Add(luckPotionDialogue);
-		
-		eventTimingRoutine = EventTiming();
-		StartCoroutine(eventTimingRoutine);
+	}
+	
+	void Update()
+	{
+		if(!dayComplete && !spawnBuffer)
+		{
+			eventTimingRoutine = EventTiming();
+			StartCoroutine(eventTimingRoutine);
+		}
 	}
 	
 	IEnumerator EventTiming()
 	{
-		if(eventsPerDay <= 0)
+		spawnBuffer = true;
+		SpawnNewNPC();
+		eventsToday--;
+		if(eventsToday <= 0)
 		{
 			yield return new WaitWhile(() => activeNPC[activeNPC.Count - 1].GetComponent<NPC>().served == false);
 			EndOfDay();
-			yield return new WaitWhile(() => !dayComplete);
 			StopCoroutine(eventTimingRoutine);
 		}
-		SpawnNewNPC();
-		eventsPerDay--;
 		yield return new WaitForSeconds(timeBetweenEvents);
-		StartCoroutine(eventTimingRoutine);
+		spawnBuffer = false;
 	}
 	
 	/* Forces all npcs to get served, no pay, stops eventTimingRoutine, calls EndOfDay.
@@ -118,11 +128,11 @@ public class NPC_Events : MonoBehaviour
 		}
 	}
 	
-#if UNITY_EDITOR
+	#if UNITY_EDITOR
 	void OnDrawGizmos()
 	{
 		Gizmos.color = Color.green;
-		for(int i = 0; i < enterPathTargets.Count; i++)
+		for(int i = 0; i < enterPathTargets.Count - 1; i++)
 		{
 			Gizmos.DrawWireSphere(enterPathTargets[i].position, 0.1f);
 			if(i + 1 < enterPathTargets.Count)
@@ -141,5 +151,5 @@ public class NPC_Events : MonoBehaviour
 			}
 		}
 	}
-#endif
+	#endif
 }

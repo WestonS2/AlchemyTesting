@@ -45,13 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 181b22681630db645b3fca8d6b31ad53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerState: 0
-  playerCoins: 0
-  itemCursorFollowSpeed: 10
-  GUI: {fileID: 0}
-  crosshairUI: {fileID: 0}
-  shopFront: {fileID: 0}
-  coinCounter: {fileID: 0}
+  GameState: 1
+  playerCoins: 5
   dayIndex: 0
   eventIncreasePerDay: 1
   decreaseTimeBetweenSpawns: 0.1
@@ -94,7 +89,6 @@ MonoBehaviour:
   - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
   - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
   - {fileID: 2800000, guid: b8b21b9d393c47b479d14def92fe99d8, type: 3}
-  workCamera: {fileID: 0}
 --- !u!114 &7852742553530444821
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -75,7 +75,7 @@ public class NPC : MonoBehaviour
 	
 	void FollowPath(List<Transform> pathTargets)
 	{
-		if(positionFree[pathPosition + 1])
+		if(positionFree[pathPosition])
 		{
 			NpcState = NPCSTATE.Idle;
 			return;
@@ -85,6 +85,13 @@ public class NPC : MonoBehaviour
 		{
 			if(pathPosition >= pathTargets.Count - 1)
 			{
+				if(NPC_Events.dayComplete)
+				{
+					served = true;
+					NpcState = NPCSTATE.FollowPath;
+					pathPosition = 0;
+					return;
+				}
 				NpcState = NPCSTATE.Customer;
 				ShopFront.currentCustomer = this.gameObject;
 				return;

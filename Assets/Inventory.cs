@@ -39,9 +39,9 @@ public class Inventory : MonoBehaviour
 		if(inventoryUI.activeSelf)
 		{
 			UpdateInventoryUI();
-			if(GameManager.instance.PlayerState == GameManager.PLAYERSTATE.FreeRoam)
+			if(SceneManager.instance.PlayerState == SceneManager.PLAYERSTATE.FreeRoam)
 			{
-				GameManager.instance.PlayerState = GameManager.PLAYERSTATE.Inventory;
+				SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.Interact;
 				itemDropPoint = defaultDropLocation.position;
 				print("Inv item drop point reset");
 			}
@@ -50,8 +50,8 @@ public class Inventory : MonoBehaviour
 		}
 		else
 		{
-			if(GameManager.instance.PlayerState == GameManager.PLAYERSTATE.Inventory)
-				GameManager.instance.PlayerState = GameManager.PLAYERSTATE.FreeRoam;
+			if(SceneManager.instance.PlayerState == SceneManager.PLAYERSTATE.Interact)
+				SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.FreeRoam;
 		}
 		return inventoryUI.activeSelf;
 	}
@@ -65,13 +65,11 @@ public class Inventory : MonoBehaviour
 			if(checkItem == item)
 			{
 				storedItems[item] += amount;
-				print($"Item Added: {item} {amount}");
 				UpdateInventoryUI();
 				return true;
 			}
 		}
 		
-		print($"Item Added: {item} {amount}");
 		storedItems.Add(item, amount);
 		UpdateInventoryUI();
 		return true;
@@ -121,9 +119,36 @@ public class Inventory : MonoBehaviour
 					return true;
 				}
 			}
-			return false;
 		}
 		return false;
+	}
+	
+	public void MoveInventoryItem(int slot)
+	{
+		int itemCount = 0;
+		foreach(ItemData.ITEM item in storedItems.Keys)
+		{
+			if(itemCount == slot)
+			{
+				if(MortarPestle.isOpen)
+				{
+					if(storedItems[item] - 1 <= 0)
+					{
+						MortarPestle.instance.AddItem(item);
+						storedItems.Remove(item);
+					}
+					else
+					{
+						MortarPestle.instance.AddItem(item);
+						storedItems[item] -= 1;
+					}
+				}
+				else DropItem(item, 1);
+				break;
+			}
+			itemCount += 1;
+		}
+		UpdateInventoryUI();
 	}
 	
 	public void DropInventoryItem(int slot)
@@ -131,11 +156,9 @@ public class Inventory : MonoBehaviour
 		int itemCount = 0;
 		foreach(ItemData.ITEM item in storedItems.Keys)
 		{
-			print($"{slot} {itemCount}");
 			if(itemCount == slot)
 			{
-				bool result = DropItem(item, 1);
-				print(result);
+				DropItem(item, 1);
 				break;
 			}
 			itemCount += 1;
