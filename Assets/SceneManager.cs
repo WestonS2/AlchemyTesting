@@ -124,6 +124,7 @@ public class SceneManager : MonoBehaviour
 	
 	void WorkMode()
 	{
+		if(workCamera != null && !workCamera.activeSelf) workCamera.SetActive(true);
 		if(playerObject.GetComponent<PlayerMovement>().enabled) playerObject.GetComponent<PlayerMovement>().enabled = false;
 		if(playerObject.GetComponent<PlayerCamera>().enabled) playerObject.GetComponent<PlayerCamera>().enabled = false;
 		if(playerCamera.gameObject.activeSelf) playerCamera.gameObject.SetActive(false);

@@ -348,9 +348,10 @@ GameObject:
   - component: {fileID: 1513914494031326894}
   - component: {fileID: 7705191359211320486}
   - component: {fileID: 6262817668879562226}
-  m_Layer: 0
+  - component: {fileID: 1713228738696626452}
+  m_Layer: 6
   m_Name: MorterPestle
-  m_TagString: Untagged
+  m_TagString: MortarPestle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -415,6 +416,27 @@ MonoBehaviour:
   resetButton: {fileID: 4548523806228995040}
   workTime: 5
   dropItemBuffer: 0.5
+--- !u!65 &1713228738696626452
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102149814433283120}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 2, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2191183487219544950
 GameObject:
   m_ObjectHideFlags: 0
@@ -1024,7 +1046,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ->
+  m_text: Reset
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

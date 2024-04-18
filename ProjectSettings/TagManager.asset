@@ -10,6 +10,8 @@ TagManager:
   - Cupboard
   - ShopFront
   - NPC
+  - MortarPestle
+  - BlastFurnace
   layers:
   - Default
   - TransparentFX

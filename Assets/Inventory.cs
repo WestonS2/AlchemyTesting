@@ -143,6 +143,19 @@ public class Inventory : MonoBehaviour
 						storedItems[item] -= 1;
 					}
 				}
+				else if(BlastFurnace.isOpen)
+				{
+					if(storedItems[item] - 1 <= 0)
+					{
+						BlastFurnace.instance.AddItem(item);
+						storedItems.Remove(item);
+					}
+					else
+					{
+						BlastFurnace.instance.AddItem(item);
+						storedItems[item] -= 1;
+					}
+				}
 				else DropItem(item, 1);
 				break;
 			}

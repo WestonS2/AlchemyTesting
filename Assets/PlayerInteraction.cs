@@ -115,6 +115,12 @@ public class PlayerInteraction : MonoBehaviour
 					SceneManager.instance.workCamera = interactionHit.collider.gameObject.GetComponent<MortarPestle>().workCamera;
 					SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.WorkMode;
 				}
+				
+				if(interactionHit.collider.gameObject.tag == "BlastFurnace")
+				{
+					SceneManager.instance.workCamera = interactionHit.collider.gameObject.GetComponent<BlastFurnace>().workCamera;
+					SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.WorkMode;
+				}
 			}
 		}
 		//Pickup Item

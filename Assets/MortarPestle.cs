@@ -11,7 +11,7 @@ public class MortarPestle : MonoBehaviour
 {
 	public static MortarPestle instance;
 	
-	[HideInInspector] public static ItemData.ITEM itemInFurnace;
+	[HideInInspector] public static ItemData.ITEM itemInMortar;
 	[HideInInspector] public static int itemAmount; 
 	[HideInInspector] public static bool isWorking;
 	[HideInInspector] public static bool isOpen;
@@ -50,12 +50,15 @@ public class MortarPestle : MonoBehaviour
 	
 	void Update()
 	{
+		if(Input.GetKeyDown(Controls.exitKey))
+			SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.FreeRoam;
+		
 		if(isWorking) WorkTimer();
 		
-		if(itemInFurnace == ItemData.ITEM.CoalDust) startButton.SetActive(true);
+		if(itemInMortar == ItemData.ITEM.CoalDust) startButton.SetActive(true);
 		else startButton.SetActive(false);
 		
-		if(itemInFurnace != ItemData.ITEM.None && !isWorking) resetButton.SetActive(true);
+		if(itemInMortar != ItemData.ITEM.None && !isWorking) resetButton.SetActive(true);
 		else resetButton.SetActive(false);
 		
 		if(workCamera.activeSelf)
@@ -73,7 +76,7 @@ public class MortarPestle : MonoBehaviour
 		sliderValue += 1 * Time.deltaTime;
 		if(sliderValue >= workTime)
 		{
-			DropItem(itemAmount);
+			DropBuffer(ItemData.ITEM.CoalDust, itemAmount);
 			StopGrinding();
 		}
 	}
@@ -96,15 +99,15 @@ public class MortarPestle : MonoBehaviour
 	
 	public bool AddItem(ItemData.ITEM item)
 	{
-		if(itemInFurnace != item) return false;
-		else if(itemInFurnace == item)
+		if(itemInMortar != item) return false;
+		else if(itemInMortar == item)
 		{
 			itemAmount++;
 			return true;
 		}
 		else
 		{
-			itemInFurnace = item;
+			itemInMortar = item;
 			itemAmount = 1;
 			return true;
 		}
@@ -112,15 +115,15 @@ public class MortarPestle : MonoBehaviour
 	
 	public bool RemoveItem(ItemData.ITEM item)
 	{
-		if(itemInFurnace != item) return false;
-		else if(itemInFurnace == item && itemAmount > 1)
+		if(itemInMortar != item) return false;
+		else if(itemInMortar == item && itemAmount > 1)
 		{
 			itemAmount--;
 			return true;
 		}
 		else
 		{
-			itemInFurnace = ItemData.ITEM.None;
+			itemInMortar = ItemData.ITEM.None;
 			itemAmount = 0;
 			return true;
 		}
@@ -137,10 +140,10 @@ public class MortarPestle : MonoBehaviour
 	public void DropItem(int dropAmount)
 	{
 		if(dropAmount > itemAmount) return;
-		StartCoroutine(DropBuffer(itemInFurnace, dropAmount));
+		StartCoroutine(DropBuffer(itemInMortar, dropAmount));
 		for(int i = 0; i < dropAmount; i++)
 		{
-			RemoveItem(itemInFurnace);
+			RemoveItem(itemInMortar);
 		}
 	}
 	
