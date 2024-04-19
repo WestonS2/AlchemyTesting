@@ -6,10 +6,8 @@ using TMPro;
 public class SceneManager : MonoBehaviour
 {
 	public static SceneManager instance;
-	
-	public static SaveData saveData;
-	
-	public enum PLAYERSTATE {FreeRoam, WorkMode, Interact};
+		
+	public enum PLAYERSTATE {FreeRoam, WorkMode, Interact, Paused};
 	public PLAYERSTATE PlayerState = PLAYERSTATE.FreeRoam;
 	
 	[HideInInspector] public GameObject workCamera;
@@ -23,7 +21,7 @@ public class SceneManager : MonoBehaviour
 	[SerializeField] GameObject crosshairUI;
 	[SerializeField] TextMeshProUGUI coinCounterText;
 	
-	bool gamePaused;
+	bool pauseBuffer;
 	
 	void Awake()
 	{
@@ -38,8 +36,6 @@ public class SceneManager : MonoBehaviour
 		ResumeGame();
 		
 		GameManager.instance.GameState = GameManager.GAMESTATE.InGame;
-		
-		gamePaused = false;
 	}
 	
 	void Update()
@@ -63,6 +59,10 @@ public class SceneManager : MonoBehaviour
 				WorkMode();
 				break;
 				
+			case PLAYERSTATE.Paused:
+				Paused();
+				break;
+				
 			default:
 				break;
 		}
@@ -76,18 +76,9 @@ public class SceneManager : MonoBehaviour
 	
 	public void ResumeGame()
 	{
-		gamePaused = false;
 		PlayerState = PLAYERSTATE.FreeRoam;
-		Time.timeScale = 1;
 		transform.GetChild(0).gameObject.SetActive(false);
-	}
-	
-	public void PauseGame()
-	{
-		gamePaused = true;
-		PlayerState = PLAYERSTATE.Interact;
-		Time.timeScale = 0;
-		transform.GetChild(0).gameObject.SetActive(true);
+		Time.timeScale = 1;
 	}
 	
 	void LocatePlayer()
@@ -109,6 +100,12 @@ public class SceneManager : MonoBehaviour
 	#region Player States
 	void FreeRoam()
 	{
+		if(Input.GetKeyDown(Controls.exitKey) && !pauseBuffer) PlayerState = PLAYERSTATE.Paused;
+		
+		#if UNITY_EDITOR
+		if(Input.GetKeyDown(KeyCode.P) && !pauseBuffer) PlayerState = PLAYERSTATE.Paused;
+		#endif
+		
 		if(!playerObject.GetComponent<PlayerMovement>().enabled) playerObject.GetComponent<PlayerMovement>().enabled = true;
 		if(!playerObject.GetComponent<PlayerCamera>().enabled) playerObject.GetComponent<PlayerCamera>().enabled = true;
 		if(!playerCamera.gameObject.activeSelf) playerCamera.gameObject.SetActive(true);
@@ -118,8 +115,6 @@ public class SceneManager : MonoBehaviour
 		if(Cursor.lockState != CursorLockMode.Locked) Cursor.lockState = CursorLockMode.Locked;
 		if(Cursor.visible) Cursor.visible = false;
 		if(workCamera != null && workCamera.activeSelf) workCamera.SetActive(false);
-		
-		if(Input.GetKeyDown(Controls.exitKey) && !gamePaused) PauseGame();
 	}
 	
 	void WorkMode()
@@ -145,13 +140,35 @@ public class SceneManager : MonoBehaviour
 		if(crosshairUI.activeSelf) crosshairUI.SetActive(false);
 		if(Cursor.lockState == CursorLockMode.Locked) Cursor.lockState = CursorLockMode.None;
 		if(!Cursor.visible) Cursor.visible = true;
+	}
+	
+	void Paused()
+	{
+		if(playerObject.GetComponent<PlayerMovement>().enabled) playerObject.GetComponent<PlayerMovement>().enabled = false;
+		if(playerObject.GetComponent<PlayerCamera>().enabled) playerObject.GetComponent<PlayerCamera>().enabled = false;
+		if(!playerCamera.gameObject.activeSelf) playerCamera.gameObject.SetActive(true);
+		if(!playerBody.gameObject.activeSelf) playerBody.gameObject.SetActive(true);
+		if(!GUI.activeSelf) GUI.SetActive(true);
+		if(crosshairUI.activeSelf) crosshairUI.SetActive(false);
+		if(Cursor.lockState == CursorLockMode.Locked) Cursor.lockState = CursorLockMode.None;
+		if(!Cursor.visible) Cursor.visible = true;
 		
-		if(Input.GetKeyDown(Controls.exitKey) && gamePaused) ResumeGame();
+		if(!transform.GetChild(0).gameObject.activeSelf) transform.GetChild(0).gameObject.SetActive(true);
+		if(Time.timeScale != 0) Time.timeScale = 0;
 	}
 	#endregion
 	
+	IEnumerator PauseBuffer()
+	{
+		pauseBuffer = true;
+		yield return new WaitForSeconds(0.1f);
+		pauseBuffer = false;
+	}
+	
+	#if !UNITY_EDITOR
 	void OnApplicationFocus(bool focus)
 	{
 		if(!focus) PauseGame();
 	}
+	#endif
 }

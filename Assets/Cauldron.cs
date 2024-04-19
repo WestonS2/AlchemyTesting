@@ -15,6 +15,7 @@ public class Cauldron : MonoBehaviour
 	[SerializeField] Transform spawnLocation;
 	[SerializeField] Slider brewSlider;
 	[SerializeField] GameObject brewButton;
+	[SerializeField] GameObject resetButton;
 	
 	public List<GameObject> itemsInCauldron = new List<GameObject>();
 	public List<GameObject> workSpaceItems = new List<GameObject>();
@@ -46,6 +47,7 @@ public class Cauldron : MonoBehaviour
 	public void ResetIngredients()
 	{
 		if(brewing) return;
+		resetButton.SetActive(false);
 		if(!spawnBuffer) StartCoroutine(SpawnBuffer());
 	}
 	
@@ -86,14 +88,15 @@ public class Cauldron : MonoBehaviour
 	{
 		BrewCheck();
 		
-		if(brewReady)
-		{
+		if(brewReady && !brewing)
 			brewButton.SetActive(true);
-		}
-		else
-		{
+		else 
 			brewButton.SetActive(false);
-		}
+		
+		if(!brewing && itemsInCauldron.Count > 0)
+			resetButton.SetActive(true);
+		else 
+			resetButton.SetActive(false);
 		
 		if(brewing)
 		{
@@ -153,12 +156,12 @@ public class Cauldron : MonoBehaviour
 	IEnumerator SpawnBuffer()
 	{
 		spawnBuffer = true;
-		foreach(GameObject ingredient in workSpaceItems)
+		/*foreach(GameObject ingredient in workSpaceItems)
 		{
 			ingredient.transform.position = spawnLocation.position;
 			ingredient.SetActive(true);
 			yield return new WaitForSeconds(0.5f);
-		}
+		}*/
 		foreach(GameObject ingredient in itemsInCauldron)
 		{
 			ingredient.transform.position = spawnLocation.position;

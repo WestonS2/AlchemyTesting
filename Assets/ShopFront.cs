@@ -7,7 +7,7 @@ public class ShopFront : MonoBehaviour
 {
 	public static ShopFront instance;
 	
-	public static GameObject currentCustomer;
+	[HideInInspector] public GameObject currentCustomer;
 	
 	IDictionary<ItemData.ITEM, int> potionValue = new Dictionary<ItemData.ITEM, int>();
 	
@@ -19,7 +19,7 @@ public class ShopFront : MonoBehaviour
 	bool shopOpen;
 	bool dialogueBoxOpen;
 	
-	void Start()
+	void Awake()
 	{
 		if(instance == null) instance = this;
 		else Destroy(this.gameObject);

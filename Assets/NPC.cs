@@ -2,18 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls an individual Non Player Character (NPC)
+/// </summary>
+
 public class NPC : MonoBehaviour
 {
-	public enum NPCSTATE {Idle, FollowPath, Customer};
+	public enum NPCSTATE {Idle, FollowPath};
 	public NPCSTATE NpcState;
 	
-	public bool served;
+	NPC_Events EventManager;
 	
-	List<bool> positionFree = new List<bool>();
+	public bool served;
 		
 	[HideInInspector] public ItemData.ITEM wantedItem;
 	[HideInInspector] public TextAsset dialogue;
-	[HideInInspector] public int pathPosition;
+	public int targetPathPosition;
 	
 	[SerializeField] float npcSpeed;
 	
@@ -23,20 +27,18 @@ public class NPC : MonoBehaviour
 	
 	void Awake()
 	{
-		pathPosition = 0;
+		targetPathPosition = 0;
 		
 		served = false;
 		
 		npcRB = GetComponent<Rigidbody>();
-		
-		foreach(Transform point in NPC_Events.enterPathTargets)
-		{
-			positionFree.Add(false);
-		}
 	}
 	
 	void Update()
 	{
+		if(EventManager == null && NPC_Events.instance != null) 
+			EventManager = NPC_Events.instance;
+		
 		switch(NpcState)
 		{
 			case NPCSTATE.Idle:
@@ -48,10 +50,8 @@ public class NPC : MonoBehaviour
 				else FollowPath(NPC_Events.exitPathTargets);
 				break;
 				
-			case NPCSTATE.Customer:
-				break;
-				
 			default:
+				NpcState = NPCSTATE.Idle;
 				break;
 		}
 	}
@@ -66,46 +66,57 @@ public class NPC : MonoBehaviour
 	
 	void Idle()
 	{
-		if(!positionFree[pathPosition])
+		/*if(!served && targetPathPosition <= NPC_Events.enterPathTargets.Count - 1 && (EventManager.enterPathOccupied[targetPathPosition] == null || EventManager.enterPathOccupied[targetPathPosition] == gameObject))
 		{
 			NpcState = NPCSTATE.FollowPath;
 			return;
 		}
+		if(served && targetPathPosition <= NPC_Events.exitPathTargets.Count - 1 && (EventManager.exitPathOccupied[targetPathPosition] == null || EventManager.exitPathOccupied[targetPathPosition] == gameObject))
+		{
+			NpcState = NPCSTATE.FollowPath;
+			return;
+		}*/
+		if(served) NpcState = NPCSTATE.FollowPath;
 	}
 	
 	void FollowPath(List<Transform> pathTargets)
 	{
-		if(positionFree[pathPosition])
+		// Path Following Conditions
+		if(targetPathPosition >= pathTargets.Count - 1)
+		{
+			NpcState = NPCSTATE.Idle;
+			if(!served) ShopFront.instance.currentCustomer = gameObject;
+			return;
+		}
+		
+		if(!served && EventManager.enterPathOccupied[targetPathPosition] != null && EventManager.enterPathOccupied[targetPathPosition] != gameObject)
 		{
 			NpcState = NPCSTATE.Idle;
 			return;
 		}
+		else if(!served && EventManager.enterPathOccupied[targetPathPosition] == null)
+			EventManager.enterPathOccupied[targetPathPosition] = gameObject;
 		
-		if(Vector3.Distance(pathTargets[pathPosition].position, transform.position) < 0.2f)
+		else if(served && EventManager.exitPathOccupied[targetPathPosition] != null && EventManager.exitPathOccupied[targetPathPosition] != gameObject)
 		{
-			if(pathPosition >= pathTargets.Count - 1)
-			{
-				if(NPC_Events.dayComplete)
-				{
-					served = true;
-					NpcState = NPCSTATE.FollowPath;
-					pathPosition = 0;
-					return;
-				}
-				NpcState = NPCSTATE.Customer;
-				ShopFront.currentCustomer = this.gameObject;
-				return;
-			}
-			else
-			{
-				positionFree[pathPosition] = false;
-				pathPosition++;
-				positionFree[pathPosition] = true;
-			}
+			NpcState = NPCSTATE.Idle;
+			return;
 		}
-		
-		moveDirection = (pathTargets[pathPosition].position - transform.position).normalized * npcSpeed * Time.deltaTime;
+		else if(served && EventManager.exitPathOccupied[targetPathPosition] == null)
+			EventManager.exitPathOccupied[targetPathPosition] = gameObject;
+			
+		// Movement
+		Vector3 moveDirection = (pathTargets[targetPathPosition].position - transform.position).normalized;
 		moveDirection.y = 0;
-		transform.position += moveDirection;
+		transform.position += moveDirection * npcSpeed * Time.deltaTime;
+		
+		if(Vector3.Distance(transform.position, pathTargets[targetPathPosition].position) < 0.2f)
+		{
+			if(!served) EventManager.enterPathOccupied[targetPathPosition] = null;
+			else EventManager.exitPathOccupied[targetPathPosition] = null;
+			
+			if(targetPathPosition + 1 <= pathTargets.Count - 1)
+				targetPathPosition++;
+		}
 	}
 }

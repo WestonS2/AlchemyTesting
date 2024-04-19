@@ -2,13 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Manages Non Player Character Events
+/// </summary>
+
 public class NPC_Events : MonoBehaviour
 {
+	public static NPC_Events instance;
+	
 	public static List<GameObject> activeNPC = new List<GameObject>();
 	public static List<Transform> enterPathTargets = new List<Transform>();
 	public static List<Transform> exitPathTargets = new List<Transform>();
 	
+	[HideInInspector] public List<GameObject> enterPathOccupied = new List<GameObject>();
+	[HideInInspector] public List<GameObject> exitPathOccupied = new List<GameObject>();
+	
 	[SerializeField] List<GameObject> npcModels = new List<GameObject>();
+	[Space(5)]
 	[Header("Event Parameters")]
 	public static int eventsToday;
 	public static float timeBetweenEvents;
@@ -32,6 +42,12 @@ public class NPC_Events : MonoBehaviour
 	
 	bool spawnBuffer;
 	
+	void Awake()
+	{
+		if(instance == null) instance = this;
+		else Destroy(this.gameObject);
+	}
+	
 	void Start()
 	{
 		GameManager.instance.NextDay();
@@ -48,6 +64,16 @@ public class NPC_Events : MonoBehaviour
 		foreach(Transform pathPoint in exitPath)
 		{
 			exitPathTargets.Add(pathPoint);
+		}
+		
+		foreach(Transform point in enterPathTargets)
+		{
+			enterPathOccupied.Add(null);
+		}
+		
+		foreach(Transform point in exitPathTargets)
+		{
+			exitPathOccupied.Add(null);
 		}
 		
 		dialogueOptions.Add(healthPotionDialogue);
@@ -127,29 +153,4 @@ public class NPC_Events : MonoBehaviour
 				break;
 		}
 	}
-	
-	#if UNITY_EDITOR
-	void OnDrawGizmos()
-	{
-		Gizmos.color = Color.green;
-		for(int i = 0; i < enterPathTargets.Count - 1; i++)
-		{
-			Gizmos.DrawWireSphere(enterPathTargets[i].position, 0.1f);
-			if(i + 1 < enterPathTargets.Count)
-			{
-				Gizmos.DrawLine(enterPathTargets[i].position, enterPathTargets[i + 1].position);
-			}
-		}
-		
-		Gizmos.color = Color.red;
-		for(int i = 0; i < exitPathTargets.Count; i++)
-		{
-			Gizmos.DrawWireSphere(exitPathTargets[i].position, 0.1f);
-			if(i + 1 < exitPathTargets.Count)
-			{
-				Gizmos.DrawLine(exitPathTargets[i].position, exitPathTargets[i + 1].position);
-			}
-		}
-	}
-	#endif
 }

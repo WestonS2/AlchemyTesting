@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
 			itemPrefabs.Add(itemObj.GetComponent<ItemData>().Item, itemObj);
 			if(itemObj.GetComponent<ItemData>().Item != ItemData.ITEM.Coin)
 				itemIcons.Add(itemObj.GetComponent<ItemData>().Item, itemImages[iconCount]);
-			if(iconCount + 1 >= itemImages.Count) iconCount++;
+			iconCount++;
 		}
 	}
 	
