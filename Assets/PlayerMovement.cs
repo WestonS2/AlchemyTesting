@@ -40,15 +40,11 @@ public class PlayerMovement : MonoBehaviour
 	
 	void Update()
 	{
-		//GroundCheck();
-		
 		Movement();
 	}
 	
 	void FixedUpdate()
 	{
-		_moveDirection *= Screen.width * Time.deltaTime;
-		_moveDirection /= 1000;
 		playerRB.AddForce(_moveDirection);
 		_moveDirection = new Vector3(0, 0, 0);
 	}
@@ -56,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
 	void Movement()
 	{
 		// Sprint
-		if(Input.GetKey(KeyCode.LeftShift)) playerSpeed = walkSpeed * sprintMultiplier;
+		if(Input.GetKey(Controls.keyCoordination[Controls.sprintKey])) playerSpeed = walkSpeed * sprintMultiplier;
 		else playerSpeed = walkSpeed;
 		
 		// Linear Movement
@@ -79,46 +75,6 @@ public class PlayerMovement : MonoBehaviour
 			_moveDirection += -playerBody.right * playerSpeed;
 		}
 		
-		/*
-		// Jumping
-		if(Input.GetKeyDown(Controls.jumpKey) && !isJumping && isGrounded)
-		{
-			JumpRoutine = JumpTiming();
-			StartCoroutine(JumpRoutine);
-			isJumping = true;
-		}
-		else if(Input.GetKeyUp(Controls.jumpKey) && isJumping)
-		{
-			StopCoroutine(JumpRoutine);
-			isJumping = false;
-		}
-		
-		if(isJumping)
-		{
-			_moveDirection += playerBody.up * jumpForce;
-		}
-		print(isJumping);*/
+		_moveDirection *= Time.deltaTime * 100;
 	}
-	
-	/*
-	void GroundCheck()
-	{
-		isGrounded = Physics.Raycast(transform.position, -transform.up, groundCheckDistance, LayerMask.GetMask("Ground"));
-	}
-	
-	IEnumerator JumpTiming()
-	{
-		print("Routine Start");
-		yield return new WaitForSeconds(jumpTime);
-		isJumping = false;
-		print("Routine Stop");
-	}
-	
-#if UNITY_EDITOR
-	void OnDrawGizmos()
-	{
-		Gizmos.color = Color.red;
-		Gizmos.DrawLine(transform.position, transform.position + (-transform.up * groundCheckDistance));
-	}
-#endif*/
 }

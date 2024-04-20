@@ -14,6 +14,8 @@ public class Controls : MonoBehaviour
 	public static KeyCode leftStrafe = KeyCode.A;
 	#endregion
 	
+	public static KeyCode sprintKey = KeyCode.LeftShift;
+	
 	public static KeyCode jumpKey = KeyCode.Space;
 	
 	public static KeyCode generalInteraction = KeyCode.E;
@@ -29,6 +31,8 @@ public class Controls : MonoBehaviour
 		keyCoordination.Add(backwardMove, KeyCode.S);
 		keyCoordination.Add(leftStrafe, KeyCode.A);
 		keyCoordination.Add(rightStrafe, KeyCode.D);
+		
+		keyCoordination.Add(sprintKey, KeyCode.LeftShift);
 		
 		keyCoordination.Add(generalInteraction, KeyCode.E);
 		keyCoordination.Add(inventoryKey, KeyCode.Tab);

@@ -57,6 +57,13 @@ public class ShopFront : MonoBehaviour
 				}
 			}
 			
+			if(Input.GetKeyDown(Controls.inventoryKey))
+			{
+				Inventory.instance.ToggleInventory();
+				Inventory.instance.itemDropPoint = itemSpawnLocation.position;
+			}
+			
+			#if UNITY_EDITOR
 			#region Spawn Potions For Testing
 			if(Input.GetKeyDown(KeyCode.Alpha1))
 			{
@@ -79,6 +86,7 @@ public class ShopFront : MonoBehaviour
 				Instantiate(GameManager.instance.itemPrefabs[ItemData.ITEM.LuckPotion], itemSpawnLocation.position, itemSpawnLocation.rotation);
 			}
 			#endregion
+			#endif
 		}
 	}
 	
@@ -106,14 +114,9 @@ public class ShopFront : MonoBehaviour
 		}
 	}
 	
-	public void ToggleInventory()
-	{
-		//Inventory script stuff here
-	}
-	
 	void OnTriggerEnter(Collider col)
 	{
-		if(col.gameObject.tag == "Item" && col.gameObject.GetComponent<ItemData>().Item != ItemData.ITEM.Coin)
+		if(col.gameObject.tag == "Item" && (col.gameObject.GetComponent<ItemData>().Item == ItemData.ITEM.HealthPotion || col.gameObject.GetComponent<ItemData>().Item == ItemData.ITEM.FirePotion || col.gameObject.GetComponent<ItemData>().Item == ItemData.ITEM.IcePotion || col.gameObject.GetComponent<ItemData>().Item == ItemData.ITEM.GrowthPotion || col.gameObject.GetComponent<ItemData>().Item == ItemData.ITEM.LuckPotion))
 		{
 			StartCoroutine(Pay(currentCustomer.GetComponent<NPC>().Serve(col.gameObject.GetComponent<ItemData>().Item), col.gameObject.GetComponent<ItemData>().Item));
 			Destroy(col.gameObject);

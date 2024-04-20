@@ -39,6 +39,8 @@ public class MortarPestle : MonoBehaviour
 	
 	void Start()
 	{
+		isOpen = false;
+		
 		isWorking = false;
 		
 		animator = gameObject.GetComponent<Animator>();
@@ -46,16 +48,18 @@ public class MortarPestle : MonoBehaviour
 		startButton.SetActive(false);
 		
 		workCamera.SetActive(false);
+		
+		workSlider.gameObject.SetActive(false);
 	}
 	
 	void Update()
 	{
-		if(Input.GetKeyDown(Controls.exitKey))
+		if(Input.GetKeyDown(Controls.exitKey) && isOpen)
 			SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.FreeRoam;
 		
 		if(isWorking) WorkTimer();
 		
-		if(itemInMortar == ItemData.ITEM.CoalDust) startButton.SetActive(true);
+		if(itemInMortar == ItemData.ITEM.Coal && !isWorking) startButton.SetActive(true);
 		else startButton.SetActive(false);
 		
 		if(itemInMortar != ItemData.ITEM.None && !isWorking) resetButton.SetActive(true);
@@ -72,11 +76,13 @@ public class MortarPestle : MonoBehaviour
 	
 	void WorkTimer()
 	{
-		workSlider.value = sliderValue;
+		workSlider.value = sliderValue / workTime;
 		sliderValue += 1 * Time.deltaTime;
 		if(sliderValue >= workTime)
 		{
-			DropBuffer(ItemData.ITEM.CoalDust, itemAmount);
+			StartCoroutine(DropBuffer(ItemData.ITEM.CoalDust, itemAmount));
+			itemInMortar = ItemData.ITEM.None;
+			itemAmount = 0;
 			StopGrinding();
 		}
 	}
@@ -99,8 +105,8 @@ public class MortarPestle : MonoBehaviour
 	
 	public bool AddItem(ItemData.ITEM item)
 	{
-		if(itemInMortar != item) return false;
-		else if(itemInMortar == item)
+		if(itemInMortar != ItemData.ITEM.None && item != itemInMortar) return false;
+		else if(item == itemInMortar)
 		{
 			itemAmount++;
 			return true;
@@ -115,8 +121,8 @@ public class MortarPestle : MonoBehaviour
 	
 	public bool RemoveItem(ItemData.ITEM item)
 	{
-		if(itemInMortar != item) return false;
-		else if(itemInMortar == item && itemAmount > 1)
+		if(item != itemInMortar) return false;
+		else if(item == itemInMortar && itemAmount > 1)
 		{
 			itemAmount--;
 			return true;

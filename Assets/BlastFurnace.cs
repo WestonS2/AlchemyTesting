@@ -37,21 +37,28 @@ public class BlastFurnace : MonoBehaviour
 	
 	void Start()
 	{
+		isOpen = false;
+		
 		isWorking = false;
 		
 		startButton.SetActive(false);
 		
+		resetButton.SetActive(false);
+		
 		workCamera.SetActive(false);
+		
+		workSlider.gameObject.SetActive(false);
 	}
 	
 	void Update()
 	{
-		if(Input.GetKeyDown(Controls.exitKey))
+		//print(itemInFurnace);
+		if(Input.GetKeyDown(Controls.exitKey) && isOpen)
 			SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.FreeRoam;
 		
 		if(isWorking) WorkTimer();
 		
-		if(itemInFurnace == ItemData.ITEM.Coal) startButton.SetActive(true);
+		if(itemInFurnace == ItemData.ITEM.Coal && !isWorking) startButton.SetActive(true);
 		else startButton.SetActive(false);
 		
 		if(itemInFurnace != ItemData.ITEM.None && !isWorking) resetButton.SetActive(true);
@@ -68,11 +75,13 @@ public class BlastFurnace : MonoBehaviour
 	
 	void WorkTimer()
 	{
-		workSlider.value = sliderValue;
+		workSlider.value = sliderValue / workTime;
 		sliderValue += 1 * Time.deltaTime;
 		if(sliderValue >= workTime)
 		{
-			DropBuffer(ItemData.ITEM.Charcoal, itemAmount);
+			StartCoroutine(DropBuffer(ItemData.ITEM.Charcoal, itemAmount));
+			itemInFurnace = ItemData.ITEM.None;
+			itemAmount = 0;
 			StopFurnace();
 		}
 	}
@@ -93,9 +102,8 @@ public class BlastFurnace : MonoBehaviour
 	
 	public bool AddItem(ItemData.ITEM item)
 	{
-		print("Item Added Furnace");
-		if(itemInFurnace != item) return false;
-		else if(itemInFurnace == item)
+		if(itemInFurnace != ItemData.ITEM.None && item != itemInFurnace) return false;
+		else if(item == itemInFurnace)
 		{
 			itemAmount++;
 			return true;
@@ -110,8 +118,8 @@ public class BlastFurnace : MonoBehaviour
 	
 	public bool RemoveItem(ItemData.ITEM item)
 	{
-		if(itemInFurnace != item) return false;
-		else if(itemInFurnace == item && itemAmount > 1)
+		if(item != itemInFurnace) return false;
+		else if(item == itemInFurnace && itemAmount > 1)
 		{
 			itemAmount--;
 			return true;
