@@ -274,7 +274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6be33e7e0b1bce84fb5950a4c5c16106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 40
+  walkSpeed: 10
   sprintMultiplier: 1.5
   playerBody: {fileID: 6671822633236845448}
 --- !u!114 &6768802813627932854
@@ -314,7 +314,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7123823224228950322}
-  m_Material: {fileID: 13400000, guid: 0c14e94aff966584496af8622788105c, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

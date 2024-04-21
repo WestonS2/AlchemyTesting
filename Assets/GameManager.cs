@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
 
 	void Awake()
 	{
-		if(instance == null)
+		if(instance == null || instance == this)
 		{
 			instance = this;
 		}
@@ -76,6 +76,12 @@ public class GameManager : MonoBehaviour
 		NPC_Events.timeBetweenEvents = timeBetweenEvents;
 		eventsPerDay += eventIncreasePerDay;
 		timeBetweenEvents -= decreaseTimeBetweenSpawns;
+		
+		if(SceneManager.instance.dayComplete) playerCoins += 3;
+		
+		Save();
+		
+		UnityEngine.SceneManagement.SceneManager.LoadScene(1);
 	}
 	
 	void MenuBehaviour()

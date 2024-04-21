@@ -8,6 +8,8 @@ using UnityEngine;
 
 public static class SaveSystem
 {
+	public static string savefilePath = Path.Combine(Application.persistentDataPath + "/SaveData.json");
+	
 	public static IDictionary<ItemData.ITEM, int> itemID = new Dictionary<ItemData.ITEM, int>()
 	{
 		{ItemData.ITEM.Rose, 1},
@@ -32,13 +34,11 @@ public static class SaveSystem
 	
 	public static void SavePlayerData(SaveData data)
 	{
-		string path = Path.Combine(Application.persistentDataPath + "/SaveData.json");
-		
-		if(File.Exists(path)) File.Delete(path);
+		if(File.Exists(savefilePath)) File.Delete(savefilePath);
 		
 		string jsonData = JsonUtility.ToJson(data, true);
 		
-		using(StreamWriter streamFile = File.CreateText(path))
+		using(StreamWriter streamFile = File.CreateText(savefilePath))
 		{
 			streamFile.WriteLine(jsonData);
 			streamFile.Close();
@@ -47,12 +47,15 @@ public static class SaveSystem
 	
 	public static SaveData LoadPlayerData()
 	{
-		string path = Path.Combine(Application.persistentDataPath + "/SaveData.json");
+		if(!File.Exists(savefilePath)) return null;
 		
-		if(!File.Exists(path)) return null;
-		
-		string readData = File.ReadAllText(path);
+		string readData = File.ReadAllText(savefilePath);
 		
 		return JsonUtility.FromJson<SaveData>(readData);
+	}
+	
+	public static void DeleteSaveFile()
+	{
+		if(File.Exists(savefilePath)) File.Delete(savefilePath);
 	}
 }

@@ -288,6 +288,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1668183307}
+    - target: {fileID: 5938876771602042939, guid: 04b3b75c0c13a4044b5af2a558571651, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1668183307}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -465,6 +469,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1852820955}
+    - target: {fileID: 4267894970246035179, guid: 337efd114887aba45ac0bb8f5bc6e38b, type: 3}
+      propertyPath: newGameButton
+      value: 
+      objectReference: {fileID: 831149863}
     - target: {fileID: 4267894970246035188, guid: 337efd114887aba45ac0bb8f5bc6e38b, type: 3}
       propertyPath: m_Name
       value: SettingsCanvas
@@ -554,6 +562,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 337efd114887aba45ac0bb8f5bc6e38b, type: 3}
+--- !u!1 &831149863 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3875275047786908177, guid: 04b3b75c0c13a4044b5af2a558571651, type: 3}
+  m_PrefabInstance: {fileID: 388497947}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1044098883
 GameObject:
   m_ObjectHideFlags: 0

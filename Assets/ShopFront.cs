@@ -21,7 +21,7 @@ public class ShopFront : MonoBehaviour
 	
 	void Awake()
 	{
-		if(instance == null) instance = this;
+		if(instance == null || instance == this) instance = this;
 		else Destroy(this.gameObject);
 		
 		shopCamera.SetActive(false);
@@ -45,7 +45,7 @@ public class ShopFront : MonoBehaviour
 				ToggleShopFront();
 			}
 			
-			if(Input.GetMouseButtonDown(Controls.pickUpMouseKey))
+			if(Input.GetMouseButtonDown(Controls.pickUpMouseKey) && currentCustomer != null)
 			{
 				Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 				if(Physics.Raycast(mouseRay.origin, mouseRay.direction, out RaycastHit hit, 10, LayerMask.GetMask("Shop")))
@@ -110,6 +110,7 @@ public class ShopFront : MonoBehaviour
 		else
 		{
 			shopCamera.SetActive(false);
+			if(dialogueBoxOpen) ToggleDialogue();
 			SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.FreeRoam;
 		}
 	}

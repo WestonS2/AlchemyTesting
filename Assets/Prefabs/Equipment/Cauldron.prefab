@@ -189,10 +189,7 @@ MonoBehaviour:
   brewButton: {fileID: 8642571248974447042}
   resetButton: {fileID: 559037610399505641}
   itemsInCauldron: []
-  workSpaceItems:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  workSpaceItems: []
 --- !u!65 &1043344414664445855
 BoxCollider:
   m_ObjectHideFlags: 0

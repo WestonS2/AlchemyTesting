@@ -18,7 +18,7 @@ public class PlayerInteraction : MonoBehaviour
 	
 	void Awake()
 	{
-		if(instance == null) instance = this;
+		if(instance == null || instance == this) instance = this;
 		else Destroy(this.gameObject);
 		
 		movementScript = GetComponent<PlayerMovement>();
@@ -27,15 +27,18 @@ public class PlayerInteraction : MonoBehaviour
 	
 	void Update()
 	{
-		switch(SceneManager.instance.PlayerState)
+		if(Camera.main != null)
 		{
-			case SceneManager.PLAYERSTATE.WorkMode:
-				WorkMode();
-				break;
-				
-			default:
-				FreeMode();
-				break;
+			switch(SceneManager.instance.PlayerState)
+			{
+				case SceneManager.PLAYERSTATE.WorkMode:
+					WorkMode();
+					break;
+					
+				default:
+					FreeMode();
+					break;
+			}
 		}
 	}
 	
@@ -87,7 +90,6 @@ public class PlayerInteraction : MonoBehaviour
 		{
 			if(Physics.Raycast(screenCentreRay.origin, screenCentreRay.direction, out RaycastHit interactionHit, interactionDistance, LayerMask.GetMask("Interactables")))
 			{
-				print("ray");
 				if(interactionHit.collider.gameObject.tag == "Cauldron")
 				{
 					print("Cauldron");
@@ -121,12 +123,22 @@ public class PlayerInteraction : MonoBehaviour
 					SceneManager.instance.workCamera = interactionHit.collider.gameObject.GetComponent<BlastFurnace>().workCamera;
 					SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.WorkMode;
 				}
+				
+				if(interactionHit.collider.gameObject.tag == "RecipeBook")
+				{
+					interactionHit.collider.gameObject.GetComponent<RecipeBook>().ToggleRecipeBook();
+				}
+				
+				if(interactionHit.collider.gameObject.tag == "Bed")
+				{
+					GameManager.instance.NextDay();
+				}
 			}
 		}
 		//Pickup Item
 		if(Input.GetMouseButtonDown(Controls.pickUpMouseKey))
 		{
-			if(Physics.Raycast(screenCentreRay.origin, screenCentreRay.direction, out RaycastHit pickupHit, interactionDistance))
+			if(Physics.Raycast(screenCentreRay.origin, screenCentreRay.direction, out RaycastHit pickupHit, interactionDistance, LayerMask.GetMask("Interactables")))
 			{
 				if(pickupHit.collider.gameObject.tag == "Item" && pickupHit.collider.gameObject.GetComponent<ItemData>().Item == ItemData.ITEM.Coin)
 				{

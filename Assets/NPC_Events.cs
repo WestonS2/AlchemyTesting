@@ -11,8 +11,8 @@ public class NPC_Events : MonoBehaviour
 	public static NPC_Events instance;
 	
 	public static List<GameObject> activeNPC = new List<GameObject>();
-	public static List<Transform> enterPathTargets = new List<Transform>();
-	public static List<Transform> exitPathTargets = new List<Transform>();
+	public List<Transform> enterPathTargets = new List<Transform>();
+	public List<Transform> exitPathTargets = new List<Transform>();
 	
 	[HideInInspector] public List<GameObject> enterPathOccupied = new List<GameObject>();
 	[HideInInspector] public List<GameObject> exitPathOccupied = new List<GameObject>();
@@ -22,7 +22,6 @@ public class NPC_Events : MonoBehaviour
 	[Header("Event Parameters")]
 	public static int eventsToday;
 	public static float timeBetweenEvents;
-	public static bool dayComplete;
 	[Header("NPC Dialogue")]
 	[SerializeField] List<TextAsset> healthPotionDialogue = new List<TextAsset>();
 	[SerializeField] List<TextAsset> firePotionDialogue = new List<TextAsset>();
@@ -44,33 +43,30 @@ public class NPC_Events : MonoBehaviour
 	
 	void Awake()
 	{
-		if(instance == null) instance = this;
+		if(instance == null || instance == this) instance = this;
 		else Destroy(this.gameObject);
-	}
-	
-	void Start()
-	{
-		GameManager.instance.NextDay();
-		
-		dayComplete = false;
 		
 		spawnBuffer = false;
 		
+		enterPathTargets = new List<Transform>();
 		foreach(Transform pathPoint in enterPath)
 		{
 			enterPathTargets.Add(pathPoint);
 		}
 		
+		exitPathTargets = new List<Transform>();
 		foreach(Transform pathPoint in exitPath)
 		{
 			exitPathTargets.Add(pathPoint);
 		}
 		
+		enterPathOccupied = new List<GameObject>();
 		foreach(Transform point in enterPathTargets)
 		{
 			enterPathOccupied.Add(null);
 		}
 		
+		exitPathOccupied = new List<GameObject>();
 		foreach(Transform point in exitPathTargets)
 		{
 			exitPathOccupied.Add(null);
@@ -85,7 +81,7 @@ public class NPC_Events : MonoBehaviour
 	
 	void Update()
 	{
-		if(!dayComplete && !spawnBuffer)
+		if(!SceneManager.instance.dayComplete && !spawnBuffer)
 		{
 			eventTimingRoutine = EventTiming();
 			StartCoroutine(eventTimingRoutine);
@@ -100,7 +96,7 @@ public class NPC_Events : MonoBehaviour
 		if(eventsToday <= 0)
 		{
 			yield return new WaitWhile(() => activeNPC[activeNPC.Count - 1].GetComponent<NPC>().served == false);
-			EndOfDay();
+			SceneManager.instance.dayComplete = true;
 			StopCoroutine(eventTimingRoutine);
 		}
 		yield return new WaitForSeconds(timeBetweenEvents);
@@ -112,11 +108,7 @@ public class NPC_Events : MonoBehaviour
 	{
 		StopCoroutine()
 	}*/
-	
-	void EndOfDay()
-	{
-		dayComplete = true;
-	}
+
 		
 	void SpawnNewNPC()
 	{
@@ -151,6 +143,14 @@ public class NPC_Events : MonoBehaviour
 				
 			default:
 				break;
+		}
+	}
+	
+	void OnDestroy()
+	{
+		foreach(GameObject npc in activeNPC)
+		{
+			Destroy(npc);
 		}
 	}
 }

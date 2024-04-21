@@ -46,8 +46,11 @@ public class NPC : MonoBehaviour
 				break;
 				
 			case NPCSTATE.FollowPath:
-				if(!served) FollowPath(NPC_Events.enterPathTargets);
-				else FollowPath(NPC_Events.exitPathTargets);
+				if(EventManager != null)
+				{
+					if(!served) FollowPath(EventManager.enterPathTargets);
+					else FollowPath(EventManager.exitPathTargets);
+				}
 				break;
 				
 			default:
@@ -59,6 +62,7 @@ public class NPC : MonoBehaviour
 	public bool Serve(ItemData.ITEM servedItem)
 	{
 		served = true;
+		targetPathPosition = 0;
 		NpcState = NPCSTATE.FollowPath;
 		if(servedItem == wantedItem) return true;
 		else return false;
@@ -82,11 +86,15 @@ public class NPC : MonoBehaviour
 	void FollowPath(List<Transform> pathTargets)
 	{
 		// Path Following Conditions
-		if(targetPathPosition >= pathTargets.Count - 1)
+		if(targetPathPosition >= pathTargets.Count - 1 && !served)
 		{
 			NpcState = NPCSTATE.Idle;
 			if(!served) ShopFront.instance.currentCustomer = gameObject;
 			return;
+		}
+		if(targetPathPosition >= pathTargets.Count - 1 && served)
+		{
+			Destroy(gameObject);
 		}
 		
 		if(!served && EventManager.enterPathOccupied[targetPathPosition] != null && EventManager.enterPathOccupied[targetPathPosition] != gameObject)

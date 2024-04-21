@@ -31,7 +31,7 @@ public class BlastFurnace : MonoBehaviour
 	
 	void Awake()
 	{
-		if(instance == null) instance = this;
+		if(instance == null || instance == this) instance = this;
 		else Destroy(this.gameObject);
 	}
 	

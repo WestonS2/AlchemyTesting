@@ -12,6 +12,8 @@ TagManager:
   - NPC
   - MortarPestle
   - BlastFurnace
+  - RecipeBook
+  - Bed
   layers:
   - Default
   - TransparentFX

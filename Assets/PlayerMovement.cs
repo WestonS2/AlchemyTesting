@@ -45,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
 	
 	void FixedUpdate()
 	{
+		_moveDirection *= Time.deltaTime * 10;
 		playerRB.AddForce(_moveDirection);
 		_moveDirection = new Vector3(0, 0, 0);
 	}
@@ -74,7 +75,5 @@ public class PlayerMovement : MonoBehaviour
 		{
 			_moveDirection += -playerBody.right * playerSpeed;
 		}
-		
-		_moveDirection *= Time.deltaTime * 100;
 	}
 }

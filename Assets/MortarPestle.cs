@@ -33,7 +33,7 @@ public class MortarPestle : MonoBehaviour
 	
 	void Awake()
 	{
-		if(instance == null) instance = this;
+		if(instance == null || instance == this) instance = this;
 		else Destroy(this.gameObject);
 	}
 	
@@ -55,7 +55,10 @@ public class MortarPestle : MonoBehaviour
 	void Update()
 	{
 		if(Input.GetKeyDown(Controls.exitKey) && isOpen)
+		{
+			StartCoroutine(SceneManager.instance.PauseBuffer());
 			SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.FreeRoam;
+		}
 		
 		if(isWorking) WorkTimer();
 		

@@ -16,16 +16,20 @@ public class SceneManager : MonoBehaviour
 	public Transform playerCamera;
 	public Transform playerBody;
 	
+	public bool dayComplete;
+	
 	[Header("Key Game Objects")]
 	public GameObject GUI;
 	[SerializeField] GameObject crosshairUI;
+	[SerializeField] GameObject starterTips;
+	[SerializeField] TextMeshProUGUI dayCount;
 	[SerializeField] TextMeshProUGUI coinCounterText;
 	
 	bool pauseBuffer;
 	
 	void Awake()
 	{
-		if(instance == null) instance = this;
+		if(instance == null || instance == this) instance = this;
 		else Destroy(this.gameObject);
 	}
 	
@@ -36,6 +40,10 @@ public class SceneManager : MonoBehaviour
 		ResumeGame();
 		
 		GameManager.instance.GameState = GameManager.GAMESTATE.InGame;
+		
+		dayComplete = false;
+		
+		if(GameManager.instance.dayIndex <= 1) StartCoroutine(PlayerTips());
 	}
 	
 	void Update()
@@ -93,6 +101,8 @@ public class SceneManager : MonoBehaviour
 	
 	void UpdateGUI()
 	{
+		//Day count
+		dayCount.SetText($"Day {GameManager.instance.dayIndex.ToString()}");
 		//Coin Count
 		coinCounterText.SetText($"{GameManager.instance.playerCoins}");
 	}
@@ -101,10 +111,6 @@ public class SceneManager : MonoBehaviour
 	void FreeRoam()
 	{
 		if(Input.GetKeyDown(Controls.exitKey) && !pauseBuffer) PlayerState = PLAYERSTATE.Paused;
-		
-		#if UNITY_EDITOR
-		if(Input.GetKeyDown(KeyCode.P) && !pauseBuffer) PlayerState = PLAYERSTATE.Paused;
-		#endif
 		
 		if(!playerObject.GetComponent<PlayerMovement>().enabled) playerObject.GetComponent<PlayerMovement>().enabled = true;
 		if(!playerObject.GetComponent<PlayerCamera>().enabled) playerObject.GetComponent<PlayerCamera>().enabled = true;
@@ -158,11 +164,18 @@ public class SceneManager : MonoBehaviour
 	}
 	#endregion
 	
-	IEnumerator PauseBuffer()
+	public IEnumerator PauseBuffer()
 	{
 		pauseBuffer = true;
 		yield return new WaitForSeconds(0.1f);
 		pauseBuffer = false;
+	}
+	
+	IEnumerator PlayerTips()
+	{
+		starterTips.SetActive(true);
+		yield return new WaitForSeconds(60);
+		starterTips.SetActive(true);
 	}
 	
 	#if !UNITY_EDITOR

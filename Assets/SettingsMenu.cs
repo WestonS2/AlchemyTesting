@@ -5,6 +5,15 @@ using UnityEngine.Audio;
 
 public class SettingsMenu : MonoBehaviour
 {
+	[SerializeField] GameObject newGameButton;
+	
+	void Start()
+	{
+		if(SaveSystem.LoadPlayerData() != null)
+			newGameButton.SetActive(true);
+		else newGameButton.SetActive(false);
+	}
+	
 	public AudioMixer mixer;
 	public void SetVolume(float volume)
 	{
@@ -14,6 +23,12 @@ public class SettingsMenu : MonoBehaviour
 	public void SetQuality(int qualityIndex)
 	{
 		QualitySettings.SetQualityLevel(qualityIndex);
+	}
+	
+	public void NewGame()
+	{
+		SaveSystem.DeleteSaveFile();
+		StartGame();
 	}
 	
 	public void StartGame()
