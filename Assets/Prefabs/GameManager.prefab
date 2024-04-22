@@ -49,7 +49,7 @@ MonoBehaviour:
   playerCoins: 5
   dayIndex: 1
   eventIncreasePerDay: 1
-  decreaseTimeBetweenSpawns: 0.1
+  decreaseTimeBetweenSpawns: 0.2
   eventsPerDay: 2
   timeBetweenEvents: 60
   itemObjects:

@@ -181,7 +181,7 @@ public class SceneManager : MonoBehaviour
 	#if !UNITY_EDITOR
 	void OnApplicationFocus(bool focus)
 	{
-		if(!focus) PauseGame();
+		if(!focus) PlayerState = PLAYERSTATE.Paused;
 	}
 	#endif
 }

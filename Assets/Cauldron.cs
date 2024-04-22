@@ -16,6 +16,7 @@ public class Cauldron : MonoBehaviour
 	[SerializeField] Slider brewSlider;
 	[SerializeField] GameObject brewButton;
 	[SerializeField] GameObject resetButton;
+	[SerializeField] GameObject playerTip;
 	
 	public List<GameObject> itemsInCauldron = new List<GameObject>();
 	public List<GameObject> workSpaceItems = new List<GameObject>();
@@ -35,8 +36,10 @@ public class Cauldron : MonoBehaviour
 		workingMode = workCamera.activeSelf;
 		if(workingMode)
 		{
+			if(GameManager.instance.dayIndex <= 1) playerTip.SetActive(true);
 			Inventory.instance.itemDropPoint = spawnLocation.position;
 		}
+		else playerTip.SetActive(false);
 	}
 	
 	public void BrewPotion()
@@ -55,6 +58,8 @@ public class Cauldron : MonoBehaviour
 	{
 		if(instance == null || instance == this) instance = this;
 		else Destroy(this.gameObject);
+		
+		playerTip.SetActive(false);
 		
 		workCamera.SetActive(false);
 		workingMode = false;

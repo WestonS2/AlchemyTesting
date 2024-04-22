@@ -13,6 +13,7 @@ public class ShopFront : MonoBehaviour
 	
 	public GameObject shopCamera;
 	[SerializeField] GameObject shopUI;
+	[SerializeField] GameObject playerTips;
 	[SerializeField] Transform itemSpawnLocation;
 	[SerializeField] TextMeshProUGUI npcDialogue;
 	
@@ -25,6 +26,8 @@ public class ShopFront : MonoBehaviour
 		else Destroy(this.gameObject);
 		
 		shopCamera.SetActive(false);
+		
+		playerTips.SetActive(false);
 		
 		shopOpen = false;
 		dialogueBoxOpen = false;
@@ -104,11 +107,13 @@ public class ShopFront : MonoBehaviour
 		
 		if(shopOpen)
 		{
+			if(GameManager.instance.dayIndex <= 1) playerTips.SetActive(true);
 			SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.WorkMode;
 			shopCamera.SetActive(true);
 		}
 		else
 		{
+			if(GameManager.instance.dayIndex <= 1) playerTips.SetActive(false);
 			shopCamera.SetActive(false);
 			if(dialogueBoxOpen) ToggleDialogue();
 			SceneManager.instance.PlayerState = SceneManager.PLAYERSTATE.FreeRoam;

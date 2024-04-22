@@ -290,7 +290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionDistance: 3
-  itemCursorFollowSpeed: 5
+  itemCursorFollowSpeed: 20
 --- !u!114 &5333698033578353182
 MonoBehaviour:
   m_ObjectHideFlags: 0

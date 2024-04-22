@@ -45,13 +45,13 @@ public class PlayerMovement : MonoBehaviour
 	
 	void FixedUpdate()
 	{
-		_moveDirection *= Time.deltaTime * 10;
 		playerRB.AddForce(_moveDirection);
-		_moveDirection = new Vector3(0, 0, 0);
 	}
 	
 	void Movement()
 	{
+		_moveDirection = new Vector3(0, 0, 0);
+		
 		// Sprint
 		if(Input.GetKey(Controls.keyCoordination[Controls.sprintKey])) playerSpeed = walkSpeed * sprintMultiplier;
 		else playerSpeed = walkSpeed;
@@ -75,5 +75,7 @@ public class PlayerMovement : MonoBehaviour
 		{
 			_moveDirection += -playerBody.right * playerSpeed;
 		}
+		
+		_moveDirection *= Time.fixedDeltaTime * 100;
 	}
 }

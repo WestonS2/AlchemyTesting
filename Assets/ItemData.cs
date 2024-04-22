@@ -86,9 +86,9 @@ public class ItemData : MonoBehaviour
 		#endregion
 		
 		#region Luck Potion Recipie
-		else if((item1 == ITEM.Coin && item2 == ITEM.Daisy || item1 == ITEM.Daisy && item2 == ITEM.Coin) && Item == ITEM.FrogSlime) return ITEM.LuckPotion;
-		else if((item1 == ITEM.FrogSlime && item2 == ITEM.Daisy || item1 == ITEM.Daisy && item2 == ITEM.FrogSlime) && Item == ITEM.Coin) return ITEM.LuckPotion;
-		else if((item1 == ITEM.Coin && item2 == ITEM.FrogSlime || item1 == ITEM.FrogSlime && item2 == ITEM.Coin) && Item == ITEM.Daisy) return ITEM.LuckPotion;
+		else if((item1 == ITEM.Daisy && item2 == ITEM.Daisy || item1 == ITEM.Daisy && item2 == ITEM.Daisy) && Item == ITEM.FrogSlime) return ITEM.LuckPotion;
+		else if((item1 == ITEM.FrogSlime && item2 == ITEM.Daisy || item1 == ITEM.Daisy && item2 == ITEM.FrogSlime) && Item == ITEM.Daisy) return ITEM.LuckPotion;
+		else if((item1 == ITEM.Daisy && item2 == ITEM.FrogSlime || item1 == ITEM.FrogSlime && item2 == ITEM.Daisy) && Item == ITEM.Daisy) return ITEM.LuckPotion;
 		#endregion
 		
 		else return ITEM.None;

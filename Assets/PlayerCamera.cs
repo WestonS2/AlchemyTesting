@@ -29,7 +29,7 @@ public class PlayerCamera : MonoBehaviour
 		mouseY = Mathf.Clamp(mouseY, -70, 70);
 		
 		camRotation = new Vector3(-mouseY, mouseX, 0);
-		transform.rotation = Quaternion.Euler(0, mouseX, 0);
+		movementScript.playerBody.eulerAngles = new Vector3(0, mouseX, 0);
 		Camera.main.transform.eulerAngles = camRotation;
 	}
 }
