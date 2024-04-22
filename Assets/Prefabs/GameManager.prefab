@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameState: 1
-  playerCoins: 5
+  playerCoins: 10
   dayIndex: 1
   eventIncreasePerDay: 1
   decreaseTimeBetweenSpawns: 0.2
